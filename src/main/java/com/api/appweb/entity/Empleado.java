@@ -7,16 +7,16 @@ import jakarta.persistence.*;
 public class Empleado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_empleado;
+    private Long id_empleado;
     private String nombre_empleado;
     private String apellidoPa_empleado;
     private String apellidoMa_empleado;
 
-    public int getId_empleado() {
+    public Long getId_empleado() {
         return id_empleado;
     }
 
-    public void setId_empleado(int id_empleado) {
+    public void setId_empleado(Long id_empleado) {
         this.id_empleado = id_empleado;
     }
 
