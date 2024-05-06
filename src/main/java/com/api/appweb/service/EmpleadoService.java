@@ -1,11 +1,17 @@
 package com.api.appweb.service;
 
+import com.api.appweb.dto.EmpleadoDTO;
+import com.api.appweb.entity.Cargo;
 import com.api.appweb.entity.Empleado;
+import com.api.appweb.entity.Sexo;
 import com.api.appweb.exception.ResourceNotFoundException;
+import com.api.appweb.repository.CargoRepository;
 import com.api.appweb.repository.EmpleadoRepository;
+import com.api.appweb.repository.SexoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +20,10 @@ import java.util.Map;
 public class EmpleadoService {
     @Autowired
     private EmpleadoRepository empleadoRepository;
+    @Autowired
+    private CargoRepository cargoRepository;
+    @Autowired
+    private SexoRepository sexoRepository;
 
     public List<Empleado> obtenerTodosLosEmpleados() {
         return empleadoRepository.findAll();
@@ -24,71 +34,80 @@ public class EmpleadoService {
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el Id: " + idEmpleado));
     }
 
-    public Empleado agregarEmpleado(Empleado empleado) {
-        return empleadoRepository.save(empleado);
-    }
+    public List<Empleado> agregarVariosEmpleados(List<EmpleadoDTO> empleadoDTOs) throws ResourceNotFoundException {
+        List<Empleado> empleados = new ArrayList<>();
 
-    public List<Empleado> agregarVariosEmpleados(List<Empleado> empleados) {
+        for (EmpleadoDTO empleadoDTO : empleadoDTOs) {
+            Cargo cargo = cargoRepository.findById(empleadoDTO.getIdCargo())
+                    .orElseThrow(() -> new ResourceNotFoundException("No se encontró un cargo para el ID: " + empleadoDTO.getIdCargo()));
+
+            Sexo sexo = sexoRepository.findById(empleadoDTO.getIdSexo())
+                    .orElseThrow(() -> new ResourceNotFoundException("No se encontró un sexo para el ID: " + empleadoDTO.getIdSexo()));
+
+            Empleado empleado = new Empleado();
+            empleado.setNombreEmpleado(empleadoDTO.getNombreEmpleado());
+            empleado.setApellidoPaEmpleado(empleadoDTO.getApellidoPaEmpleado());
+            empleado.setApellidoMaEmpleado(empleadoDTO.getApellidoMaEmpleado());
+            empleado.setIdCargo(cargo);
+            empleado.setFechaNacimiento(empleadoDTO.getFechaNacimiento());
+            empleado.setIdSexo(sexo);
+            empleado.setCorreoEmpleado(empleadoDTO.getCorreoEmpleado());
+            empleado.setNumeroEmpleado(empleadoDTO.getNumeroEmpleado());
+            empleado.setDireccionEmpleado(empleadoDTO.getDireccionEmpleado());
+
+            empleados.add(empleado);
+        }
+
         return empleadoRepository.saveAll(empleados);
     }
 
-//    public Empleado agregarEmpleado(EmpleadosDTO empleadosDTO)throws ResourceNotFoundException {
-//        Cargos cargos = cargosRepository.findById(empleadosDTO.getIdCargo())
-//                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un cargo para el ID: " + empleadosDTO.getIdCargo()));
-//
-//        Sexo sexo = sexoRepository.findById(empleadosDTO.getIdSexo())
-//                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un sexo para el ID: " + empleadosDTO.getIdSexo()));
-//
-//
-//        Empleados empleados = new Empleados();
-//
-//        empleados.setNombreEmpleado(empleadosDTO.getNombreEmpleado());
-//        empleados.setApellidoPaEmpleado(empleadosDTO.getApellidoPaEmpleado());
-//        empleados.setApellidoMaEmpleado(empleadosDTO.getApellidoMaEmpleado());
-//        empleados.setIdCargo(cargos);
-//        empleados.setFechaDeNacimiento(empleadosDTO.getFechaDeNacimiento());
-//        empleados.setIdSexo(sexo);
-//        empleados.setCorreoEmpleado(empleadosDTO.getCorreoEmpleado());
-//        empleados.setNumeroEmpleado(empleadosDTO.getNumeroEmpleado());
-//        empleados.setDireccionEmpleado(empleadosDTO.getDireccionEmpleado());
-//
-//        empleadosRepository.save(empleados);
-//        return empleados;
-//    }
 
-    public Empleado actualizarEmpleado(Long idEmpleado, Empleado datosEmpleado) throws ResourceNotFoundException {
+    public Empleado agregarEmpleado(EmpleadoDTO empleadoDTO)throws ResourceNotFoundException {
+        Cargo cargo = cargoRepository.findById(empleadoDTO.getIdCargo())
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un cargo para el ID: " + empleadoDTO.getIdCargo()));
+
+        Sexo sexo = sexoRepository.findById(empleadoDTO.getIdSexo())
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un sexo para el ID: " + empleadoDTO.getIdSexo()));
+
+
+        Empleado empleado = new Empleado();
+
+        empleado.setNombreEmpleado(empleadoDTO.getNombreEmpleado());
+        empleado.setApellidoPaEmpleado(empleadoDTO.getApellidoPaEmpleado());
+        empleado.setApellidoMaEmpleado(empleadoDTO.getApellidoMaEmpleado());
+        empleado.setIdCargo(cargo);
+        empleado.setFechaNacimiento(empleadoDTO.getFechaNacimiento());
+        empleado.setIdSexo(sexo);
+        empleado.setCorreoEmpleado(empleadoDTO.getCorreoEmpleado());
+        empleado.setNumeroEmpleado(empleadoDTO.getNumeroEmpleado());
+        empleado.setDireccionEmpleado(empleadoDTO.getDireccionEmpleado());
+
+        empleadoRepository.save(empleado);
+        return empleado;
+    }
+
+    public Empleado actualizarEmpleado(Long idEmpleado, EmpleadoDTO empleadoDTO) throws ResourceNotFoundException {
         Empleado empleado = empleadoRepository.findById(idEmpleado)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el ID: " + idEmpleado));
 
-        empleado.setNombre_empleado(datosEmpleado.getNombre_empleado());
-        empleado.setApellidoPa_empleado(datosEmpleado.getApellidoPa_empleado());
-        empleado.setApellidoMa_empleado(datosEmpleado.getApellidoMa_empleado());
+        Cargo cargo = cargoRepository.findById(empleadoDTO.getIdCargo())
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un cargo para el ID: " + empleadoDTO.getIdCargo()));
+
+        Sexo sexo = sexoRepository.findById(empleadoDTO.getIdSexo())
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un sexo para el ID: " + empleadoDTO.getIdSexo()));
+
+        empleado.setNombreEmpleado(empleadoDTO.getNombreEmpleado());
+        empleado.setApellidoPaEmpleado(empleadoDTO.getApellidoPaEmpleado());
+        empleado.setApellidoMaEmpleado(empleadoDTO.getApellidoMaEmpleado());
+        empleado.setIdCargo(cargo);
+        empleado.setFechaNacimiento(empleadoDTO.getFechaNacimiento());
+        empleado.setIdSexo(sexo);
+        empleado.setCorreoEmpleado(empleadoDTO.getCorreoEmpleado());
+        empleado.setNumeroEmpleado(empleadoDTO.getNumeroEmpleado());
+        empleado.setDireccionEmpleado(empleadoDTO.getDireccionEmpleado());
 
         return empleadoRepository.save(empleado);
     }
-
-//    public Empleado actualizarEmpleado(Long idEmpleado, EmpleadosDTO empleadosDTO) throws ResourceNotFoundException {
-//        Empleados empleados = empleadosRepository.findById(idEmpleado)
-//                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el ID: " + idEmpleado));
-//
-//        Cargos cargo = cargosRepository.findById(empleadosDTO.getIdCargo())
-//                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un cargo para el ID: " + empleadosDTO.getIdCargo()));
-//
-//        Sexo sexo = sexoRepository.findById(empleadosDTO.getIdSexo())
-//                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un sexo para el ID: " + empleadosDTO.getIdSexo()));
-//
-//        empleados.setNombreEmpleado(empleadosDTO.getNombreEmpleado());
-//        empleados.setApellidoPaEmpleado(empleadosDTO.getApellidoPaEmpleado());
-//        empleados.setApellidoMaEmpleado(empleadosDTO.getApellidoMaEmpleado());
-//        empleados.setIdCargo(cargo);
-//        empleados.setFechaDeNacimiento(empleadosDTO.getFechaDeNacimiento());
-//        empleados.setIdSexo(sexo);
-//        empleados.setCorreoEmpleado(empleadosDTO.getCorreoEmpleado());
-//        empleados.setNumeroEmpleado(empleadosDTO.getNumeroEmpleado());
-//        empleados.setDireccionEmpleado(empleadosDTO.getDireccionEmpleado());
-//
-//        return empleadosRepository.save(empleados);
-//    }
 
     public Map<String, Boolean> eliminarEmpleado(Long idEmpleado) throws ResourceNotFoundException {
         Empleado empleado = empleadoRepository.findById(idEmpleado)

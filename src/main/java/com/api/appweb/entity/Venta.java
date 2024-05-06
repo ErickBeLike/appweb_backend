@@ -12,10 +12,11 @@ public class Venta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_venta;
+    @Column(name = "id_venta")
+    private Long idVenta;
     @ManyToOne
-    @JoinColumn
-    private Empleado id_empleado;
+    @JoinColumn(name = "id_empleado")
+    private Empleado idEmpleado;
     @ElementCollection
     @CollectionTable(name="detalle_venta", joinColumns=@JoinColumn(name="id_venta"))
     @MapKeyJoinColumn(name="id_producto")
@@ -25,20 +26,20 @@ public class Venta {
     private double total;
     private LocalDateTime fecha_venta;
 
-    public Long getId_venta() {
-        return id_venta;
+    public Long getIdVenta() {
+        return idVenta;
     }
 
-    public void setId_venta(Long id_venta) {
-        this.id_venta = id_venta;
+    public void setIdVenta(Long idVenta) {
+        this.idVenta = idVenta;
     }
 
-    public Empleado getId_empleado() {
-        return id_empleado;
+    public Empleado getIdEmpleado() {
+        return idEmpleado;
     }
 
-    public void setId_empleado(Empleado id_empleado) {
-        this.id_empleado = id_empleado;
+    public void setIdEmpleado(Empleado idEmpleado) {
+        this.idEmpleado = idEmpleado;
     }
 
     public Map<Producto, Integer> getCantidadesProducto() {

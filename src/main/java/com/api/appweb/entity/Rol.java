@@ -1,4 +1,6 @@
 package com.api.appweb.entity;
 
-public class Rol {
+public enum Rol {
+    USER,
+    ADMIN
 }

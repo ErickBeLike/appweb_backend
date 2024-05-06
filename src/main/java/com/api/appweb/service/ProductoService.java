@@ -37,9 +37,9 @@ public class ProductoService {
         Producto producto = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + idProducto));
 
-        producto.setNombre_producto(datosProducto.getNombre_producto());
-        producto.setDescripcion_producto(datosProducto.getDescripcion_producto());
-        producto.setPrecio_producto(datosProducto.getPrecio_producto());
+        producto.setNombreProducto(datosProducto.getNombreProducto());
+        producto.setDescripcionProducto(datosProducto.getDescripcionProducto());
+        producto.setPrecioProducto(datosProducto.getPrecioProducto());
 
         return productoRepository.save(producto);
     }

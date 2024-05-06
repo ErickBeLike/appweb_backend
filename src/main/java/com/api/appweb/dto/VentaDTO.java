@@ -3,24 +3,24 @@ package com.api.appweb.dto;
 import java.util.List;
 
 public class VentaDTO {
-    private Long id_venta;
-    private Long id_empleado;
+    private Long idVenta;
+    private Long idEmpleado;
     private List<ProductoCantidadDTO> productos;
 
-    public Long getId_venta() {
-        return id_venta;
+    public Long getIdVenta() {
+        return idVenta;
     }
 
-    public void setId_venta(Long id_venta) {
-        this.id_venta = id_venta;
+    public void setIdVenta(Long idVenta) {
+        this.idVenta = idVenta;
     }
 
-    public Long getId_empleado() {
-        return id_empleado;
+    public Long getIdEmpleado() {
+        return idEmpleado;
     }
 
-    public void setId_empleado(Long id_empleado) {
-        this.id_empleado = id_empleado;
+    public void setIdEmpleado(Long idEmpleado) {
+        this.idEmpleado = idEmpleado;
     }
 
     public List<ProductoCantidadDTO> getProductos() {

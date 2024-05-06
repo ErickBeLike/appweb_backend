@@ -40,13 +40,13 @@ public class VentaService {
 
     public Venta agregarVenta(VentaDTO ventaDTO) throws ResourceNotFoundException {
         Venta venta = new Venta();
-        venta.setId_empleado(empleadoRepository.findById(ventaDTO.getId_empleado())
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el ID: " + ventaDTO.getId_empleado())));
+        venta.setIdEmpleado(empleadoRepository.findById(ventaDTO.getIdEmpleado())
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el ID: " + ventaDTO.getIdEmpleado())));
 
         Map<Producto, Integer> cantidadesProducto = new HashMap<>();
         for (ProductoCantidadDTO productoCantidadDTO : ventaDTO.getProductos()) {
-            Producto producto = productoRepository.findById(productoCantidadDTO.getId_producto())
-                    .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + productoCantidadDTO.getId_producto()));
+            Producto producto = productoRepository.findById(productoCantidadDTO.getIdProducto())
+                    .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + productoCantidadDTO.getIdProducto()));
             cantidadesProducto.put(producto, productoCantidadDTO.getCantidad()); // Usamos la cantidad proporcionada en el DTO
         }
 
@@ -66,7 +66,7 @@ public class VentaService {
         for (Map.Entry<Producto, Integer> entry : cantidadesProducto.entrySet()) {
             Producto producto = entry.getKey();
             int cantidad = entry.getValue();
-            total += producto.getPrecio_producto() * cantidad;
+            total += producto.getPrecioProducto() * cantidad;
         }
         return total;
     }
@@ -75,8 +75,8 @@ public class VentaService {
         Venta venta = ventaRepository.findById(idVenta)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró una venta para el ID: " + idVenta));
 
-        venta.setId_empleado(empleadoRepository.findById(ventaDTO.getId_empleado())
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el ID: " + ventaDTO.getId_empleado())));
+        venta.setIdEmpleado(empleadoRepository.findById(ventaDTO.getIdEmpleado())
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el ID: " + ventaDTO.getIdEmpleado())));
 
         // Obtenemos la lista de productos de la venta actual
         Map<Producto, Integer> cantidadesProducto = venta.getCantidadesProducto();
@@ -92,7 +92,7 @@ public class VentaService {
             // Verificamos si el producto está presente en el DTO de actualización
             boolean encontrado = false;
             for (ProductoCantidadDTO productoCantidadDTO : ventaDTO.getProductos()) {
-                if (producto.getId_producto().equals(productoCantidadDTO.getId_producto())) {
+                if (producto.getIdProducto().equals(productoCantidadDTO.getIdProducto())) {
                     // Si el producto está presente, actualizamos su cantidad con el valor proporcionado
                     cantidadesProducto.put(producto, productoCantidadDTO.getCantidad());
                     encontrado = true;
@@ -112,8 +112,8 @@ public class VentaService {
 
         // Agregamos los nuevos productos a la venta
         for (ProductoCantidadDTO productoCantidadDTO : ventaDTO.getProductos()) {
-            Producto productoNuevo = productoRepository.findById(productoCantidadDTO.getId_producto())
-                    .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + productoCantidadDTO.getId_producto()));
+            Producto productoNuevo = productoRepository.findById(productoCantidadDTO.getIdProducto())
+                    .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + productoCantidadDTO.getIdProducto()));
 
             if (!cantidadesProducto.containsKey(productoNuevo)) {
                 cantidadesProducto.put(productoNuevo, productoCantidadDTO.getCantidad());

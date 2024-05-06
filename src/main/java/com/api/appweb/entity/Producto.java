@@ -7,40 +7,44 @@ import jakarta.persistence.*;
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_producto;
-    private String nombre_producto;
-    private String descripcion_producto;
-    private double precio_producto;
+    @Column(name = "id_producto")
+    private Long idProducto;
+    @Column(name = "nombre")
+    private String nombreProducto;
+    @Column(name = "descripcion")
+    private String descripcionProducto;
+    @Column(name = "precio")
+    private double precioProducto;
 
-    public Long getId_producto() {
-        return id_producto;
+    public Long getIdProducto() {
+        return idProducto;
     }
 
-    public void setId_producto(Long id_producto) {
-        this.id_producto = id_producto;
+    public void setIdProducto(Long idProducto) {
+        this.idProducto = idProducto;
     }
 
-    public String getNombre_producto() {
-        return nombre_producto;
+    public String getNombreProducto() {
+        return nombreProducto;
     }
 
-    public void setNombre_producto(String nombre_producto) {
-        this.nombre_producto = nombre_producto;
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
 
-    public String getDescripcion_producto() {
-        return descripcion_producto;
+    public String getDescripcionProducto() {
+        return descripcionProducto;
     }
 
-    public void setDescripcion_producto(String descripcion_producto) {
-        this.descripcion_producto = descripcion_producto;
+    public void setDescripcionProducto(String descripcionProducto) {
+        this.descripcionProducto = descripcionProducto;
     }
 
-    public double getPrecio_producto() {
-        return precio_producto;
+    public double getPrecioProducto() {
+        return precioProducto;
     }
 
-    public void setPrecio_producto(double precio_producto) {
-        this.precio_producto = precio_producto;
+    public void setPrecioProducto(double precioProducto) {
+        this.precioProducto = precioProducto;
     }
 }

@@ -1,9 +1,11 @@
 package com.api.appweb.controller;
 
+import com.api.appweb.dto.EmpleadoDTO;
 import com.api.appweb.entity.Empleado;
 import com.api.appweb.exception.ResourceNotFoundException;
 import com.api.appweb.service.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/empleado")
+@RequestMapping("/api/empleados")
 public class EmpleadoController {
     @Autowired
     private EmpleadoService empleadoService;
@@ -28,21 +30,24 @@ public class EmpleadoController {
     }
 
     @PostMapping
-    public Empleado agregarEmpleado(@RequestBody Empleado empleado) throws ResourceNotFoundException {
-        return empleadoService.agregarEmpleado(empleado);
+    public Empleado agregarEmpleado(@RequestBody EmpleadoDTO empleadoDTO) throws ResourceNotFoundException {
+        return empleadoService.agregarEmpleado(empleadoDTO);
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<List<Empleado>> agregarVariosEmpleados(@RequestBody List<Empleado> empleados) {
-        List<Empleado> nuevosEmpleados = empleadoService.agregarVariosEmpleados(empleados);
-        return ResponseEntity.ok(nuevosEmpleados);
+    public ResponseEntity<List<Empleado>> agregarVariosEmpleados(@RequestBody List<EmpleadoDTO> empleadoDTOs) {
+        try {
+            List<Empleado> nuevosEmpleados = empleadoService.agregarVariosEmpleados(empleadoDTOs);
+            return ResponseEntity.ok(nuevosEmpleados);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable Long id, @RequestBody Empleado empleado)
+    public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable Long id, @RequestBody EmpleadoDTO empleadoDTO)
             throws ResourceNotFoundException {
-        Empleado updatedEmpleado = empleadoService.actualizarEmpleado(id, empleado);
+        Empleado updatedEmpleado = empleadoService.actualizarEmpleado(id, empleadoDTO);
         return ResponseEntity.ok(updatedEmpleado);
     }
 

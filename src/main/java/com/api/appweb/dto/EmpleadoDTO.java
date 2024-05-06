@@ -1,35 +1,17 @@
-package com.api.appweb.entity;
-
-import jakarta.persistence.*;
+package com.api.appweb.dto;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "empleados")
-public class Empleado {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_empleado")
+public class EmpleadoDTO {
     private Long idEmpleado;
-    @Column(name = "nombre")
     private String nombreEmpleado;
-    @Column(name = "apellido_paterno")
     private String apellidoPaEmpleado;
-    @Column(name = "apellido_materno")
     private String apellidoMaEmpleado;
-    @ManyToOne
-    @JoinColumn(name = "id_cargo")
-    private Cargo idCargo;
-    @ManyToOne
-    @JoinColumn(name = "id_sexo")
-    private Sexo idSexo;
-    @Column(name = "fecha_nacimiento")
+    private Long idCargo;
+    private Long idSexo;
     private LocalDate fechaNacimiento;
-    @Column(name = "direccion")
     private String direccionEmpleado;
-    @Column(name = "correo")
     private String correoEmpleado;
-    @Column(name = "numero")
     private String numeroEmpleado;
 
     public Long getIdEmpleado() {
@@ -64,19 +46,19 @@ public class Empleado {
         this.apellidoMaEmpleado = apellidoMaEmpleado;
     }
 
-    public Cargo getIdCargo() {
+    public Long getIdCargo() {
         return idCargo;
     }
 
-    public void setIdCargo(Cargo idCargo) {
+    public void setIdCargo(Long idCargo) {
         this.idCargo = idCargo;
     }
 
-    public Sexo getIdSexo() {
+    public Long getIdSexo() {
         return idSexo;
     }
 
-    public void setIdSexo(Sexo idSexo) {
+    public void setIdSexo(Long idSexo) {
         this.idSexo = idSexo;
     }
 
