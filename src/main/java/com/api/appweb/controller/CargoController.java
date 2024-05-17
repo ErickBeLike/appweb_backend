@@ -5,10 +5,7 @@ import com.api.appweb.exception.ResourceNotFoundException;
 import com.api.appweb.service.CargoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,6 +14,17 @@ import java.util.List;
 public class CargoController {
     @Autowired
     private CargoService cargoService;
+
+    @GetMapping
+    public List<Cargo> obtenerTodosLosCargos() {
+        return cargoService.obtenerTodosLosCargos();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Cargo> buscarCargoId(@PathVariable Long id) throws ResourceNotFoundException {
+        Cargo cargo = cargoService.buscarCargoId(id);
+        return ResponseEntity.ok().body(cargo);
+    }
 
 
     @PostMapping

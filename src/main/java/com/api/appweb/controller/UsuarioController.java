@@ -23,8 +23,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Long id) throws ResourceNotFoundException {
-        Usuario usuario = usuarioService.buscarUsuario(id);
+    public ResponseEntity<Usuario> buscarUsuarioId(@PathVariable Long id) throws ResourceNotFoundException {
+        Usuario usuario = usuarioService.buscarUsuarioId(id);
         return ResponseEntity.ok().body(usuario);
     }
 

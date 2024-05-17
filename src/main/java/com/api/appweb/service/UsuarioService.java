@@ -18,7 +18,7 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Usuario buscarUsuario(Long idUsuario) throws ResourceNotFoundException {
+    public Usuario buscarUsuarioId(Long idUsuario) throws ResourceNotFoundException {
         return usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un usuario para el ID: " + idUsuario));
     }

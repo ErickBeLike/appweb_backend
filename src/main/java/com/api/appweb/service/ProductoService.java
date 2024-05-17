@@ -19,7 +19,7 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
-    public Producto buscarProducto(Long idProducto) throws ResourceNotFoundException {
+    public Producto buscarProductoId(Long idProducto) throws ResourceNotFoundException {
         return productoRepository.findById(idProducto)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + idProducto));
     }
@@ -38,7 +38,6 @@ public class ProductoService {
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + idProducto));
 
         producto.setNombreProducto(datosProducto.getNombreProducto());
-        producto.setDescripcionProducto(datosProducto.getDescripcionProducto());
         producto.setPrecioProducto(datosProducto.getPrecioProducto());
 
         return productoRepository.save(producto);

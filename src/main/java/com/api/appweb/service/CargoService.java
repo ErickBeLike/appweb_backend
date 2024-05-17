@@ -18,7 +18,7 @@ public class CargoService {
         return cargoRepository.findAll();
     }
 
-    public Cargo buscarCargoPorId(Long idCargo) throws ResourceNotFoundException {
+    public Cargo buscarCargoId(Long idCargo) throws ResourceNotFoundException {
         return cargoRepository.findById(idCargo)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un cargo para el ID: " + idCargo));
     }

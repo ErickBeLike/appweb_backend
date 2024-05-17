@@ -11,8 +11,6 @@ public class Producto {
     private Long idProducto;
     @Column(name = "nombre")
     private String nombreProducto;
-    @Column(name = "descripcion")
-    private String descripcionProducto;
     @Column(name = "precio")
     private double precioProducto;
 
@@ -30,14 +28,6 @@ public class Producto {
 
     public void setNombreProducto(String nombreProducto) {
         this.nombreProducto = nombreProducto;
-    }
-
-    public String getDescripcionProducto() {
-        return descripcionProducto;
-    }
-
-    public void setDescripcionProducto(String descripcionProducto) {
-        this.descripcionProducto = descripcionProducto;
     }
 
     public double getPrecioProducto() {

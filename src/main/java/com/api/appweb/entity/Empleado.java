@@ -11,26 +11,19 @@ public class Empleado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_empleado")
     private Long idEmpleado;
-    @Column(name = "nombre")
-    private String nombreEmpleado;
-    @Column(name = "apellido_paterno")
-    private String apellidoPaEmpleado;
-    @Column(name = "apellido_materno")
-    private String apellidoMaEmpleado;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_persona")
+    private Persona persona;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "sexo")
+    private Sexo sexo;
     @ManyToOne
     @JoinColumn(name = "id_cargo")
     private Cargo idCargo;
-    @ManyToOne
-    @JoinColumn(name = "id_sexo")
-    private Sexo idSexo;
     @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
     @Column(name = "direccion")
     private String direccionEmpleado;
-    @Column(name = "correo")
-    private String correoEmpleado;
-    @Column(name = "numero")
-    private String numeroEmpleado;
 
     public Long getIdEmpleado() {
         return idEmpleado;
@@ -40,28 +33,20 @@ public class Empleado {
         this.idEmpleado = idEmpleado;
     }
 
-    public String getNombreEmpleado() {
-        return nombreEmpleado;
+    public Persona getPersona() {
+        return persona;
     }
 
-    public void setNombreEmpleado(String nombreEmpleado) {
-        this.nombreEmpleado = nombreEmpleado;
+    public void setPersona(Persona persona) {
+        this.persona = persona;
     }
 
-    public String getApellidoPaEmpleado() {
-        return apellidoPaEmpleado;
+    public Sexo getSexo() {
+        return sexo;
     }
 
-    public void setApellidoPaEmpleado(String apellidoPaEmpleado) {
-        this.apellidoPaEmpleado = apellidoPaEmpleado;
-    }
-
-    public String getApellidoMaEmpleado() {
-        return apellidoMaEmpleado;
-    }
-
-    public void setApellidoMaEmpleado(String apellidoMaEmpleado) {
-        this.apellidoMaEmpleado = apellidoMaEmpleado;
+    public void setSexo(Sexo sexo) {
+        this.sexo = sexo;
     }
 
     public Cargo getIdCargo() {
@@ -70,14 +55,6 @@ public class Empleado {
 
     public void setIdCargo(Cargo idCargo) {
         this.idCargo = idCargo;
-    }
-
-    public Sexo getIdSexo() {
-        return idSexo;
-    }
-
-    public void setIdSexo(Sexo idSexo) {
-        this.idSexo = idSexo;
     }
 
     public LocalDate getFechaNacimiento() {
@@ -94,21 +71,5 @@ public class Empleado {
 
     public void setDireccionEmpleado(String direccionEmpleado) {
         this.direccionEmpleado = direccionEmpleado;
-    }
-
-    public String getCorreoEmpleado() {
-        return correoEmpleado;
-    }
-
-    public void setCorreoEmpleado(String correoEmpleado) {
-        this.correoEmpleado = correoEmpleado;
-    }
-
-    public String getNumeroEmpleado() {
-        return numeroEmpleado;
-    }
-
-    public void setNumeroEmpleado(String numeroEmpleado) {
-        this.numeroEmpleado = numeroEmpleado;
     }
 }

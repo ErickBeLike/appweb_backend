@@ -1,9 +1,7 @@
 package com.api.appweb.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -14,17 +12,28 @@ public class Venta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_venta")
     private Long idVenta;
+
     @ManyToOne
     @JoinColumn(name = "id_empleado")
     private Empleado idEmpleado;
+
     @ElementCollection
     @CollectionTable(name="detalle_venta", joinColumns=@JoinColumn(name="id_venta"))
     @MapKeyJoinColumn(name="id_producto")
     @Column(name="cantidad_producto")
     private Map<Producto, Integer> cantidadesProducto;
 
+    @ElementCollection
+    @CollectionTable(name="precios_unitarios", joinColumns=@JoinColumn(name="id_venta"))
+    @MapKeyJoinColumn(name="id_producto")
+    @Column(name="precio_unitario")
+    private Map<Producto, Double> preciosUnitarios;
+    @Column(name = "total")
     private double total;
-    private LocalDateTime fecha_venta;
+    @Column(name = "fecha_venta")
+    private LocalDateTime fechaVenta;
+
+    // Getters y setters
 
     public Long getIdVenta() {
         return idVenta;
@@ -50,6 +59,14 @@ public class Venta {
         this.cantidadesProducto = cantidadesProducto;
     }
 
+    public Map<Producto, Double> getPreciosUnitarios() {
+        return preciosUnitarios;
+    }
+
+    public void setPreciosUnitarios(Map<Producto, Double> preciosUnitarios) {
+        this.preciosUnitarios = preciosUnitarios;
+    }
+
     public double getTotal() {
         return total;
     }
@@ -58,11 +75,11 @@ public class Venta {
         this.total = total;
     }
 
-    public LocalDateTime getFecha_venta() {
-        return fecha_venta;
+    public LocalDateTime getFechaVenta() {
+        return fechaVenta;
     }
 
-    public void setFecha_venta(LocalDateTime fecha_venta) {
-        this.fecha_venta = fecha_venta;
+    public void setFechaVenta(LocalDateTime fechaVenta) {
+        this.fechaVenta = fechaVenta;
     }
 }

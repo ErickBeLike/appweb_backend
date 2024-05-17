@@ -24,8 +24,8 @@ public class VentaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Venta> buscarVentaPorId(@PathVariable Long id) throws ResourceNotFoundException {
-        Venta venta = ventaService.buscarVenta(id);
+    public ResponseEntity<Venta> buscarVentaId(@PathVariable Long id) throws ResourceNotFoundException {
+        Venta venta = ventaService.buscarVentaId(id);
         return ResponseEntity.ok().body(venta);
     }
 

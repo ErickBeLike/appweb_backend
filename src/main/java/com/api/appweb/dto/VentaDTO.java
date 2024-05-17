@@ -6,6 +6,8 @@ public class VentaDTO {
     private Long idVenta;
     private Long idEmpleado;
     private List<ProductoCantidadDTO> productos;
+    private List<ProductoDetalleDTO> productosDetalle;
+
 
     public Long getIdVenta() {
         return idVenta;
@@ -29,5 +31,13 @@ public class VentaDTO {
 
     public void setProductos(List<ProductoCantidadDTO> productos) {
         this.productos = productos;
+    }
+
+    public List<ProductoDetalleDTO> getProductosDetalle() {
+        return productosDetalle;
+    }
+
+    public void setProductosDetalle(List<ProductoDetalleDTO> productosDetalle) {
+        this.productosDetalle = productosDetalle;
     }
 }
