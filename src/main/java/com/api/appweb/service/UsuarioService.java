@@ -37,7 +37,6 @@ public class UsuarioService {
 
         usuario.setRol(datosUsuario.getRol());
         usuario.setNombreUsuario(datosUsuario.getNombreUsuario());
-        usuario.setCorreoUsuario(datosUsuario.getCorreoUsuario());
         usuario.setContrasenaUsuario(datosUsuario.getContrasenaUsuario());
         return usuarioRepository.save(usuario);
     }

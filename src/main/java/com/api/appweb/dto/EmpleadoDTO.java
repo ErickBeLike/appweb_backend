@@ -4,6 +4,7 @@ import com.api.appweb.entity.Persona;
 import com.api.appweb.entity.Sexo;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class EmpleadoDTO {
     private Long idEmpleado;
@@ -12,6 +13,9 @@ public class EmpleadoDTO {
     private Long idCargo;
     private LocalDate fechaNacimiento;
     private String direccionEmpleado;
+    private String horarioEntrada;
+    private String horarioSalida;
+    private List<String> diasLaborales;
 
     public Long getIdEmpleado() {
         return idEmpleado;
@@ -59,5 +63,29 @@ public class EmpleadoDTO {
 
     public void setDireccionEmpleado(String direccionEmpleado) {
         this.direccionEmpleado = direccionEmpleado;
+    }
+
+    public String getHorarioEntrada() {
+        return horarioEntrada;
+    }
+
+    public void setHorarioEntrada(String horarioEntrada) {
+        this.horarioEntrada = horarioEntrada;
+    }
+
+    public String getHorarioSalida() {
+        return horarioSalida;
+    }
+
+    public void setHorarioSalida(String horarioSalida) {
+        this.horarioSalida = horarioSalida;
+    }
+
+    public List<String> getDiasLaborales() {
+        return diasLaborales;
+    }
+
+    public void setDiasLaborales(List<String> diasLaborales) {
+        this.diasLaborales = diasLaborales;
     }
 }

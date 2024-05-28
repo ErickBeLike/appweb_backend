@@ -12,13 +12,13 @@ public class UsuarioLoginService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public String iniciarSesion(String correo, String contrasena) throws ResourceNotFoundException {
-        Usuario usuario = usuarioRepository.findByCorreoUsuario(correo)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un usuario con el correo: " + correo));
+    public String iniciarSesion(String nombreUsuario, String contrasena) throws ResourceNotFoundException {
+        Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un usuario con el nombre: " + nombreUsuario));
 
         // Verificar la contraseña
         if (!usuario.getContrasenaUsuario().equals(contrasena)) {
-            throw new ResourceNotFoundException("La contraseña proporcionada no es válida para el usuario con correo: " + correo);
+            throw new ResourceNotFoundException("La contraseña proporcionada no es válida para el usuario con nombre: " + nombreUsuario);
         }
 
         // Si el inicio de sesión fue exitoso, devolver un mensaje de éxito con el nombre del usuario

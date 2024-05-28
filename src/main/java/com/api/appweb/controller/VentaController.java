@@ -35,11 +35,11 @@ public class VentaController {
         return ResponseEntity.ok(nuevaVenta);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Venta> actualizarVenta(@PathVariable Long id, @RequestBody VentaDTO ventaDTO) throws ResourceNotFoundException {
-        Venta ventaActualizada = ventaService.actualizarVenta(id, ventaDTO);
-        return ResponseEntity.ok(ventaActualizada);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Venta> actualizarVenta(@PathVariable Long id, @RequestBody VentaDTO ventaDTO) throws ResourceNotFoundException {
+//        Venta ventaActualizada = ventaService.actualizarVenta(id, ventaDTO);
+//        return ResponseEntity.ok(ventaActualizada);
+//    }
 
 
     @DeleteMapping("/{id}")

@@ -28,6 +28,19 @@ public class Venta {
     @MapKeyJoinColumn(name="id_producto")
     @Column(name="precio_unitario")
     private Map<Producto, Double> preciosUnitarios;
+
+    @ElementCollection
+    @CollectionTable(name="nombres", joinColumns=@JoinColumn(name="id_venta"))
+    @MapKeyJoinColumn(name="id_producto")
+    @Column(name="nombres_productos")
+    private Map<Producto, String> nombresProductos;
+
+    @ElementCollection
+    @CollectionTable(name="subtotales", joinColumns=@JoinColumn(name="id_venta"))
+    @MapKeyJoinColumn(name="id_producto")
+    @Column(name="subtotal")
+    private Map<Producto, Double> subtotales;
+
     @Column(name = "total")
     private double total;
     @Column(name = "fecha_venta")
@@ -65,6 +78,22 @@ public class Venta {
 
     public void setPreciosUnitarios(Map<Producto, Double> preciosUnitarios) {
         this.preciosUnitarios = preciosUnitarios;
+    }
+
+    public Map<Producto, String> getNombresProductos() {
+        return nombresProductos;
+    }
+
+    public void setNombresProductos(Map<Producto, String> nombresProductos) {
+        this.nombresProductos = nombresProductos;
+    }
+
+    public Map<Producto, Double> getSubtotales() {
+        return subtotales;
+    }
+
+    public void setSubtotales(Map<Producto, Double> subtotales) {
+        this.subtotales = subtotales;
     }
 
     public double getTotal() {

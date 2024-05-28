@@ -14,8 +14,6 @@ public class Usuario {
     private Rol rol;
     @Column(name = "nombre")
     private String nombreUsuario;
-    @Column(name = "correo")
-    private String correoUsuario;
     @Column(name = "contrasena")
     private String contrasenaUsuario;
 
@@ -41,14 +39,6 @@ public class Usuario {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
-    }
-
-    public String getCorreoUsuario() {
-        return correoUsuario;
-    }
-
-    public void setCorreoUsuario(String correoUsuario) {
-        this.correoUsuario = correoUsuario;
     }
 
     public String getContrasenaUsuario() {
