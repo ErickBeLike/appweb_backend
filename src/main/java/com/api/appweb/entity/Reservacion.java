@@ -16,11 +16,11 @@ public class Reservacion {
     @JoinColumn(name = "id_cliente")
     private Cliente idCliente;
     @Column(name = "fecha_inicio")
-    private LocalDateTime fechaInicio;
+    private LocalDate fechaInicio;
     @Column(name = "dias")
     private int dias;
     @Column(name = "fecha_final")
-    private LocalDateTime fechaFinal;
+    private LocalDate fechaFinal;
     @ManyToOne
     @JoinColumn(name = "id_habitacion")
     private Habitacion idHabitacion;
@@ -43,11 +43,11 @@ public class Reservacion {
         this.idCliente = idCliente;
     }
 
-    public LocalDateTime getFechaInicio() {
+    public LocalDate getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(LocalDateTime fechaInicio) {
+    public void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
@@ -59,11 +59,11 @@ public class Reservacion {
         this.dias = dias;
     }
 
-    public LocalDateTime getFechaFinal() {
+    public LocalDate getFechaFinal() {
         return fechaFinal;
     }
 
-    public void setFechaFinal(LocalDateTime fechaFinal) {
+    public void setFechaFinal(LocalDate fechaFinal) {
         this.fechaFinal = fechaFinal;
     }
 

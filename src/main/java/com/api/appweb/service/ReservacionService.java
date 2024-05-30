@@ -11,6 +11,7 @@ import com.api.appweb.repository.ReservacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +54,7 @@ public class ReservacionService {
 
         Reservacion reservacion = new Reservacion();
         reservacion.setIdCliente(cliente);
-        reservacion.setFechaInicio(LocalDateTime.now());
+        reservacion.setFechaInicio(reservacionDTO.getFechaInicio());
         reservacion.setDias(reservacionDTO.getDias());
         reservacion.setFechaFinal(reservacion.getFechaInicio().plusDays(reservacion.getDias()));
         reservacion.setIdHabitacion(habitacion);
@@ -87,7 +88,7 @@ public class ReservacionService {
 
         reservacion.setIdCliente(clienteRepository.findById(reservacionDTO.getIdCliente())
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un cliente para el ID: " + reservacionDTO.getIdCliente())));
-        reservacion.setFechaInicio(LocalDateTime.now());
+        reservacion.setFechaInicio(reservacionDTO.getFechaInicio());
         reservacion.setDias(reservacionDTO.getDias());
         reservacion.setFechaFinal(reservacion.getFechaInicio().plusDays(reservacion.getDias()));
         reservacion.setIdHabitacion(nuevaHabitacion);

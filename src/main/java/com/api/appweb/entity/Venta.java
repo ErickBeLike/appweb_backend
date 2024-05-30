@@ -2,6 +2,7 @@ package com.api.appweb.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -17,29 +18,8 @@ public class Venta {
     @JoinColumn(name = "id_empleado")
     private Empleado idEmpleado;
 
-    @ElementCollection
-    @CollectionTable(name="detalle_venta", joinColumns=@JoinColumn(name="id_venta"))
-    @MapKeyJoinColumn(name="id_producto")
-    @Column(name="cantidad_producto")
-    private Map<Producto, Integer> cantidadesProducto;
-
-    @ElementCollection
-    @CollectionTable(name="precios_unitarios", joinColumns=@JoinColumn(name="id_venta"))
-    @MapKeyJoinColumn(name="id_producto")
-    @Column(name="precio_unitario")
-    private Map<Producto, Double> preciosUnitarios;
-
-    @ElementCollection
-    @CollectionTable(name="nombres", joinColumns=@JoinColumn(name="id_venta"))
-    @MapKeyJoinColumn(name="id_producto")
-    @Column(name="nombres_productos")
-    private Map<Producto, String> nombresProductos;
-
-    @ElementCollection
-    @CollectionTable(name="subtotales", joinColumns=@JoinColumn(name="id_venta"))
-    @MapKeyJoinColumn(name="id_producto")
-    @Column(name="subtotal")
-    private Map<Producto, Double> subtotales;
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    private List<DetalleVenta> detallesVenta;
 
     @Column(name = "total")
     private double total;
@@ -64,37 +44,6 @@ public class Venta {
         this.idEmpleado = idEmpleado;
     }
 
-    public Map<Producto, Integer> getCantidadesProducto() {
-        return cantidadesProducto;
-    }
-
-    public void setCantidadesProducto(Map<Producto, Integer> cantidadesProducto) {
-        this.cantidadesProducto = cantidadesProducto;
-    }
-
-    public Map<Producto, Double> getPreciosUnitarios() {
-        return preciosUnitarios;
-    }
-
-    public void setPreciosUnitarios(Map<Producto, Double> preciosUnitarios) {
-        this.preciosUnitarios = preciosUnitarios;
-    }
-
-    public Map<Producto, String> getNombresProductos() {
-        return nombresProductos;
-    }
-
-    public void setNombresProductos(Map<Producto, String> nombresProductos) {
-        this.nombresProductos = nombresProductos;
-    }
-
-    public Map<Producto, Double> getSubtotales() {
-        return subtotales;
-    }
-
-    public void setSubtotales(Map<Producto, Double> subtotales) {
-        this.subtotales = subtotales;
-    }
 
     public double getTotal() {
         return total;
@@ -110,5 +59,13 @@ public class Venta {
 
     public void setFechaVenta(LocalDateTime fechaVenta) {
         this.fechaVenta = fechaVenta;
+    }
+
+    public List<DetalleVenta> getDetallesVenta() {
+        return detallesVenta;
+    }
+
+    public void setDetallesVenta(List<DetalleVenta> detallesVenta) {
+        this.detallesVenta = detallesVenta;
     }
 }
