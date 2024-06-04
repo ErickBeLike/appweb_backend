@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 public class ReservacionDTO {
     private Long idReservacion;
     private Long idCliente;
-    private LocalDateTime fechaInicio;
+    private LocalDate fechaInicio;
     private int dias;
-    private LocalDateTime fechaFinal;
+    private LocalDate fechaFinal;
     private Long idHabitacion;
     private double total;
 
@@ -28,11 +28,11 @@ public class ReservacionDTO {
         this.idCliente = idCliente;
     }
 
-    public LocalDateTime getFechaInicio() {
+    public LocalDate getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(LocalDateTime fechaInicio) {
+    public void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
@@ -44,11 +44,11 @@ public class ReservacionDTO {
         this.dias = dias;
     }
 
-    public LocalDateTime getFechaFinal() {
+    public LocalDate getFechaFinal() {
         return fechaFinal;
     }
 
-    public void setFechaFinal(LocalDateTime fechaFinal) {
+    public void setFechaFinal(LocalDate fechaFinal) {
         this.fechaFinal = fechaFinal;
     }
 

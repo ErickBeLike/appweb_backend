@@ -2,22 +2,16 @@ package com.api.appweb.service;
 
 import com.api.appweb.dto.ProductoCantidadDTO;
 import com.api.appweb.dto.VentaDTO;
-import com.api.appweb.dto.ProductoDetalleDTO;
-import com.api.appweb.entity.Producto;
-import com.api.appweb.entity.Venta;
+import com.api.appweb.entity.*;
 import com.api.appweb.exception.ResourceNotFoundException;
-import com.api.appweb.repository.EmpleadoRepository;
-import com.api.appweb.repository.ProductoRepository;
-import com.api.appweb.repository.VentaRepository;
+import com.api.appweb.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class VentaService {
@@ -30,6 +24,9 @@ public class VentaService {
 
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Autowired
+    private DetalleVentaRepository detalleVentaRepository;
 
     public List<Venta> obtenerTodasLasVentas() {
         return ventaRepository.findAll();
@@ -45,58 +42,75 @@ public class VentaService {
         venta.setIdEmpleado(empleadoRepository.findById(ventaDTO.getIdEmpleado())
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el ID: " + ventaDTO.getIdEmpleado())));
 
-        Map<Producto, Integer> cantidadesProducto = new HashMap<>();
-        Map<Producto, Double> preciosUnitarios = new HashMap<>();
+        List<DetalleVenta> detallesVenta = new ArrayList<>();
+        double totalVenta = 0.0;
+
         for (ProductoCantidadDTO productoCantidadDTO : ventaDTO.getProductos()) {
             Producto producto = productoRepository.findById(productoCantidadDTO.getIdProducto())
                     .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + productoCantidadDTO.getIdProducto()));
-            cantidadesProducto.put(producto, productoCantidadDTO.getCantidad());
-            preciosUnitarios.put(producto, producto.getPrecioProducto());
+
+            int cantidad = productoCantidadDTO.getCantidad();
+            double precioUnitario = producto.getPrecioProducto();
+            double subtotal = cantidad * precioUnitario;
+            totalVenta += subtotal;
+
+            DetalleVenta detalleVenta = new DetalleVenta();
+            detalleVenta.setVenta(venta);
+            detalleVenta.setProducto(producto);
+            detalleVenta.setCantidad(cantidad);
+            detalleVenta.setPrecioUnitario(precioUnitario);
+            detalleVenta.setSubtotal(subtotal);
+
+            detallesVenta.add(detalleVenta);
         }
 
-        venta.setCantidadesProducto(cantidadesProducto);
-        venta.setPreciosUnitarios(preciosUnitarios);
-
-        double total = calcularTotalVenta(cantidadesProducto, preciosUnitarios);
-        venta.setTotal(total);
-
+        venta.setDetallesVenta(detallesVenta);
+        venta.setTotal(totalVenta);
         venta.setFechaVenta(LocalDateTime.now());
 
         return ventaRepository.save(venta);
-    }
-
-    private double calcularTotalVenta(Map<Producto, Integer> cantidadesProducto, Map<Producto, Double> preciosUnitarios) {
-        return cantidadesProducto.entrySet().stream()
-                .mapToDouble(entry -> entry.getValue() * preciosUnitarios.get(entry.getKey()))
-                .sum();
     }
 
     public Venta actualizarVenta(Long idVenta, VentaDTO ventaDTO) throws ResourceNotFoundException {
         Venta venta = ventaRepository.findById(idVenta)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró una venta para el ID: " + idVenta));
 
-        venta.setIdEmpleado(empleadoRepository.findById(ventaDTO.getIdEmpleado())
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el ID: " + ventaDTO.getIdEmpleado())));
+        // Eliminar los detalles de venta existentes asociados con la venta
+        detalleVentaRepository.deleteByVenta(venta);
 
-        Map<Producto, Integer> cantidadesProducto = new HashMap<>();
-        Map<Producto, Double> preciosUnitarios = new HashMap<>();
+        // Crear nuevos detalles de venta para los productos proporcionados en la solicitud
+        List<DetalleVenta> detallesVenta = new ArrayList<>();
+        double totalVenta = 0.0;
+
         for (ProductoCantidadDTO productoCantidadDTO : ventaDTO.getProductos()) {
             Producto producto = productoRepository.findById(productoCantidadDTO.getIdProducto())
                     .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + productoCantidadDTO.getIdProducto()));
-            cantidadesProducto.put(producto, productoCantidadDTO.getCantidad());
-            preciosUnitarios.put(producto, producto.getPrecioProducto());
+
+            int cantidad = productoCantidadDTO.getCantidad();
+            double precioUnitario = producto.getPrecioProducto();
+            double subtotal = cantidad * precioUnitario;
+            totalVenta += subtotal;
+
+            DetalleVenta detalleVenta = new DetalleVenta();
+            detalleVenta.setVenta(venta);
+            detalleVenta.setProducto(producto);
+            detalleVenta.setCantidad(cantidad);
+            detalleVenta.setPrecioUnitario(precioUnitario);
+            detalleVenta.setSubtotal(subtotal);
+
+            detallesVenta.add(detalleVenta);
         }
 
-        venta.setCantidadesProducto(cantidadesProducto);
-        venta.setPreciosUnitarios(preciosUnitarios);
-
-        double total = calcularTotalVenta(cantidadesProducto, preciosUnitarios);
-        venta.setTotal(total);
-
+        // Actualizar la venta con los nuevos detalles de venta y otros datos actualizados
+        venta.setDetallesVenta(detallesVenta);
+        venta.setTotal(totalVenta);
         venta.setFechaVenta(LocalDateTime.now());
 
         return ventaRepository.save(venta);
+
     }
+
+
 
     public Map<String, Boolean> eliminarVenta(Long idVenta) throws ResourceNotFoundException {
         Venta venta = ventaRepository.findById(idVenta)

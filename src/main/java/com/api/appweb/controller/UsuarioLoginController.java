@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/login")
 public class UsuarioLoginController {
@@ -17,29 +20,31 @@ public class UsuarioLoginController {
     private UsuarioLoginService usuarioLoginService;
 
     @PostMapping
-    public ResponseEntity<String> iniciarSesion(@RequestBody UsuarioLoginRequest request) throws ResourceNotFoundException {
-        String mensaje = usuarioLoginService.iniciarSesion(request.getCorreo(), request.getContrasena());
-        return ResponseEntity.ok(mensaje);
+    public ResponseEntity<Map<String, String>> iniciarSesion(@RequestBody UsuarioLoginRequest request) throws ResourceNotFoundException {
+        String mensaje = usuarioLoginService.iniciarSesion(request.getNombreUsuario(), request.getContrasena());
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", mensaje);
+        return ResponseEntity.ok(response);
     }
 
     public static class UsuarioLoginRequest {
-        private String correo;
+        private String nombreUsuario;
         private String contrasena;
 
         public UsuarioLoginRequest() {}
 
-        public UsuarioLoginRequest(String correo, String contrasena) {
-            this.correo = correo;
+        public UsuarioLoginRequest(String nombreUsuario, String contrasena) {
+            this.nombreUsuario = nombreUsuario;
             this.contrasena = contrasena;
         }
 
         // Getters y setters
-        public String getCorreo() {
-            return correo;
+        public String getNombreUsuario() {
+            return nombreUsuario;
         }
 
-        public void setCorreo(String correo) {
-            this.correo = correo;
+        public void setNombreUsuario(String nombreUsuario) {
+            this.nombreUsuario = nombreUsuario;
         }
 
         public String getContrasena() {
@@ -51,3 +56,4 @@ public class UsuarioLoginController {
         }
     }
 }
+

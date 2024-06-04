@@ -48,6 +48,9 @@ public class EmpleadoService {
             empleado.setFechaNacimiento(empleadoDTO.getFechaNacimiento());
             empleado.setSexo(empleadoDTO.getSexo());
             empleado.setDireccionEmpleado(empleadoDTO.getDireccionEmpleado());
+            empleado.setHorarioEntrada(empleadoDTO.getHorarioEntrada());
+            empleado.setHorarioSalida(empleadoDTO.getHorarioSalida());
+            empleado.setDiasLaborales(empleadoDTO.getDiasLaborales());
 
             empleados.add(empleado);
         }
@@ -69,6 +72,9 @@ public class EmpleadoService {
         empleado.setFechaNacimiento(empleadoDTO.getFechaNacimiento());
         empleado.setSexo(empleadoDTO.getSexo());
         empleado.setDireccionEmpleado(empleadoDTO.getDireccionEmpleado());
+        empleado.setHorarioEntrada(empleadoDTO.getHorarioEntrada());
+        empleado.setHorarioSalida(empleadoDTO.getHorarioSalida());
+        empleado.setDiasLaborales(empleadoDTO.getDiasLaborales());
 
         return empleadoRepository.save(empleado);
     }
@@ -86,6 +92,9 @@ public class EmpleadoService {
         empleado.setFechaNacimiento(empleadoDTO.getFechaNacimiento());
         empleado.setSexo(empleadoDTO.getSexo());
         empleado.setDireccionEmpleado(empleadoDTO.getDireccionEmpleado());
+        empleado.setHorarioEntrada(empleadoDTO.getHorarioEntrada());
+        empleado.setHorarioSalida(empleadoDTO.getHorarioSalida());
+        empleado.setDiasLaborales(empleadoDTO.getDiasLaborales());
 
         return empleadoRepository.save(empleado);
     }
