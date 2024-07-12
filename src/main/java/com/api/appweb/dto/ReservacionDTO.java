@@ -1,5 +1,7 @@
 package com.api.appweb.dto;
 
+import com.api.appweb.entity.TipoReservacion;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -7,10 +9,9 @@ public class ReservacionDTO {
     private Long idReservacion;
     private Long idCliente;
     private LocalDate fechaInicio;
-    private int dias;
-    private LocalDate fechaFinal;
+    private int tiempoReservacion;
+    private TipoReservacion tipoReservacion;
     private Long idHabitacion;
-    private double total;
 
     public Long getIdReservacion() {
         return idReservacion;
@@ -36,20 +37,20 @@ public class ReservacionDTO {
         this.fechaInicio = fechaInicio;
     }
 
-    public int getDias() {
-        return dias;
+    public int getTiempoReservacion() {
+        return tiempoReservacion;
     }
 
-    public void setDias(int dias) {
-        this.dias = dias;
+    public void setTiempoReservacion(int tiempoReservacion) {
+        this.tiempoReservacion = tiempoReservacion;
     }
 
-    public LocalDate getFechaFinal() {
-        return fechaFinal;
+    public TipoReservacion getTipoReservacion() {
+        return tipoReservacion;
     }
 
-    public void setFechaFinal(LocalDate fechaFinal) {
-        this.fechaFinal = fechaFinal;
+    public void setTipoReservacion(TipoReservacion tipoReservacion) {
+        this.tipoReservacion = tipoReservacion;
     }
 
     public Long getIdHabitacion() {
@@ -58,13 +59,5 @@ public class ReservacionDTO {
 
     public void setIdHabitacion(Long idHabitacion) {
         this.idHabitacion = idHabitacion;
-    }
-
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
     }
 }

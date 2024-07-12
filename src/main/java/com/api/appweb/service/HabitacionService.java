@@ -39,7 +39,12 @@ public class HabitacionService {
 
         habitacion.setHabitacion(datosHabitacion.getHabitacion());
         habitacion.setCupo(datosHabitacion.getCupo());
-        habitacion.setPrecioDia(datosHabitacion.getPrecioDia());
+        habitacion.setPrecioPorNoche(datosHabitacion.getPrecioPorNoche());
+        habitacion.setDepositoInicialNoche(datosHabitacion.getDepositoInicialNoche());
+        habitacion.setPrecioPorSemana(datosHabitacion.getPrecioPorSemana());
+        habitacion.setDepositoInicialSemana(datosHabitacion.getDepositoInicialSemana());
+        habitacion.setPrecioPorMes(datosHabitacion.getPrecioPorMes());
+        habitacion.setDepositoInicialSemana(datosHabitacion.getDepositoInicialSemana());
         habitacion.setDisponibilidad(datosHabitacion.getDisponibilidad());
 
         return habitacionRepository.save(habitacion);

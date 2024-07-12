@@ -8,7 +8,7 @@ import java.util.List;
 
 public class EmpleadoDTO {
     private Long idEmpleado;
-    private Persona persona; // Cambiar por PersonaDTO
+    private Persona persona;
     private Sexo sexo;
     private Long idCargo;
     private LocalDate fechaNacimiento;

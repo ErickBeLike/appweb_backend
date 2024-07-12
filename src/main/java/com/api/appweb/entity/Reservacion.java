@@ -17,13 +17,18 @@ public class Reservacion {
     private Cliente idCliente;
     @Column(name = "fecha_inicio")
     private LocalDate fechaInicio;
-    @Column(name = "dias")
-    private int dias;
+    @Column(name = "tiempo_reservación")
+    private int tiempoReservacion;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "tipo_reservacion")
+    private TipoReservacion tipoReservacion;
     @Column(name = "fecha_final")
     private LocalDate fechaFinal;
     @ManyToOne
     @JoinColumn(name = "id_habitacion")
     private Habitacion idHabitacion;
+    @Column(name = "deposito_inicial")
+    private double depositoInicial;
     @Column(name = "total")
     private double total;
 
@@ -51,12 +56,20 @@ public class Reservacion {
         this.fechaInicio = fechaInicio;
     }
 
-    public int getDias() {
-        return dias;
+    public int getTiempoReservacion() {
+        return tiempoReservacion;
     }
 
-    public void setDias(int dias) {
-        this.dias = dias;
+    public void setTiempoReservacion(int tiempoReservacion) {
+        this.tiempoReservacion = tiempoReservacion;
+    }
+
+    public TipoReservacion getTipoReservacion() {
+        return tipoReservacion;
+    }
+
+    public void setTipoReservacion(TipoReservacion tipoReservacion) {
+        this.tipoReservacion = tipoReservacion;
     }
 
     public LocalDate getFechaFinal() {
@@ -73,6 +86,14 @@ public class Reservacion {
 
     public void setIdHabitacion(Habitacion idHabitacion) {
         this.idHabitacion = idHabitacion;
+    }
+
+    public double getDepositoInicial() {
+        return depositoInicial;
+    }
+
+    public void setDepositoInicial(double depositoInicial) {
+        this.depositoInicial = depositoInicial;
     }
 
     public double getTotal() {
