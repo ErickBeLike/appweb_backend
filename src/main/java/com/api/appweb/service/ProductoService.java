@@ -6,6 +6,7 @@ import com.api.appweb.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,11 @@ public class ProductoService {
 
         producto.setNombreProducto(datosProducto.getNombreProducto());
         producto.setPrecioProducto(datosProducto.getPrecioProducto());
+
+        /**
+         * Modificación de la fecha dde actualización
+         */
+        producto.setFechaActualizacion(LocalDateTime.now());
 
         return productoRepository.save(producto);
     }

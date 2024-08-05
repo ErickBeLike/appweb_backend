@@ -10,6 +10,7 @@ import com.api.appweb.repository.EmpleadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,6 +96,11 @@ public class EmpleadoService {
         empleado.setHorarioEntrada(empleadoDTO.getHorarioEntrada());
         empleado.setHorarioSalida(empleadoDTO.getHorarioSalida());
         empleado.setDiasLaborales(empleadoDTO.getDiasLaborales());
+
+        /**
+         * Modificación de la fecha dde actualización
+         */
+        empleado.setFechaActualizacion(LocalDateTime.now());
 
         return empleadoRepository.save(empleado);
     }

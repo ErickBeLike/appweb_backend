@@ -34,7 +34,7 @@ public class JwtProvider {
                 .setSubject(usuarioPrincipal.getUsername())
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + expiration * 1000L)) // Nota: Asegúrate de que la expiración esté en milisegundos
+                .setExpiration(new Date(new Date().getTime() + expiration * 1000)) // Nota: Asegúrate de que la expiración esté en milisegundos
                 .signWith(getSecret(secret))
                 .compact();
     }

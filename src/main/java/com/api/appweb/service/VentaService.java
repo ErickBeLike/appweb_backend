@@ -7,6 +7,8 @@ import com.api.appweb.exception.ResourceNotFoundException;
 import com.api.appweb.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +20,6 @@ public class VentaService {
 
     @Autowired
     private VentaRepository ventaRepository;
-
-    @Autowired
-    private EmpleadoRepository empleadoRepository;
 
     @Autowired
     private ProductoRepository productoRepository;
@@ -39,20 +38,17 @@ public class VentaService {
 
     public Venta agregarVenta(VentaDTO ventaDTO) throws ResourceNotFoundException {
         Venta venta = new Venta();
-        venta.setIdEmpleado(empleadoRepository.findById(ventaDTO.getIdEmpleado())
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un empleado para el ID: " + ventaDTO.getIdEmpleado())));
-
         List<DetalleVenta> detallesVenta = new ArrayList<>();
-        double totalVenta = 0.0;
+        BigDecimal totalVenta = BigDecimal.ZERO;
 
         for (ProductoCantidadDTO productoCantidadDTO : ventaDTO.getProductos()) {
             Producto producto = productoRepository.findById(productoCantidadDTO.getIdProducto())
                     .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + productoCantidadDTO.getIdProducto()));
 
             int cantidad = productoCantidadDTO.getCantidad();
-            double precioUnitario = producto.getPrecioProducto();
-            double subtotal = cantidad * precioUnitario;
-            totalVenta += subtotal;
+            BigDecimal precioUnitario = producto.getPrecioProducto();
+            BigDecimal subtotal = precioUnitario.multiply(BigDecimal.valueOf(cantidad)).setScale(2, RoundingMode.HALF_UP);
+            totalVenta = totalVenta.add(subtotal);
 
             DetalleVenta detalleVenta = new DetalleVenta();
             detalleVenta.setVenta(venta);
@@ -65,7 +61,7 @@ public class VentaService {
         }
 
         venta.setDetallesVenta(detallesVenta);
-        venta.setTotal(totalVenta);
+        venta.setTotal(totalVenta.setScale(2, RoundingMode.HALF_UP));
         venta.setFechaVenta(LocalDateTime.now());
 
         return ventaRepository.save(venta);
@@ -80,16 +76,16 @@ public class VentaService {
 
         // Crear nuevos detalles de venta para los productos proporcionados en la solicitud
         List<DetalleVenta> detallesVenta = new ArrayList<>();
-        double totalVenta = 0.0;
+        BigDecimal totalVenta = BigDecimal.ZERO;
 
         for (ProductoCantidadDTO productoCantidadDTO : ventaDTO.getProductos()) {
             Producto producto = productoRepository.findById(productoCantidadDTO.getIdProducto())
                     .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + productoCantidadDTO.getIdProducto()));
 
             int cantidad = productoCantidadDTO.getCantidad();
-            double precioUnitario = producto.getPrecioProducto();
-            double subtotal = cantidad * precioUnitario;
-            totalVenta += subtotal;
+            BigDecimal precioUnitario = producto.getPrecioProducto();
+            BigDecimal subtotal = precioUnitario.multiply(BigDecimal.valueOf(cantidad)).setScale(2, RoundingMode.HALF_UP);
+            totalVenta = totalVenta.add(subtotal);
 
             DetalleVenta detalleVenta = new DetalleVenta();
             detalleVenta.setVenta(venta);
@@ -103,14 +99,12 @@ public class VentaService {
 
         // Actualizar la venta con los nuevos detalles de venta y otros datos actualizados
         venta.setDetallesVenta(detallesVenta);
-        venta.setTotal(totalVenta);
+        venta.setTotal(totalVenta.setScale(2, RoundingMode.HALF_UP));
         venta.setFechaVenta(LocalDateTime.now());
+        venta.setFechaActualizacion(LocalDateTime.now());
 
         return ventaRepository.save(venta);
-
     }
-
-
 
     public Map<String, Boolean> eliminarVenta(Long idVenta) throws ResourceNotFoundException {
         Venta venta = ventaRepository.findById(idVenta)

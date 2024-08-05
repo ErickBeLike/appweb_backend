@@ -48,7 +48,8 @@ public class MainSecurity {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/login",
-                        "/auth/nuevo").permitAll()
+                        "/auth/nuevo",
+                        "/api/roles").permitAll()
                 .anyRequest().authenticated());
         http.exceptionHandling(exc -> exc.authenticationEntryPoint(jwtEntryPoint));
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

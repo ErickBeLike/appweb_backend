@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -56,10 +57,7 @@ public class UsuarioService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateToken(authentication);
 
-        String nombreUsuario = loginUsuario.getNombreUsuario();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
-        return new JwtDTO(jwt, "Bearer", nombreUsuario, authorities);
+        return new JwtDTO(jwt);
     }
 
     public UsuarioRespuesta save(NuevoUsuario nuevoUsuario) {
@@ -83,7 +81,6 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
         return new UsuarioRespuesta(usuario.getNombreUsuario() + " ha sido creado", usuario);
     }
-
 
     public List<Usuario> obtenerTodosLosUsuarios() {
         return usuarioRepository.findAll();
@@ -113,6 +110,11 @@ public class UsuarioService {
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
         }
         usuario.setRoles(roles);
+
+        /**
+         * Modificación de la fecha dde actualización
+         */
+        usuario.setFechaActualizacion(LocalDateTime.now());
 
         usuarioRepository.save(usuario);
 

@@ -1,17 +1,21 @@
 package com.api.appweb.service;
 
+import com.api.appweb.dto.PagoDTO;
 import com.api.appweb.dto.ReservacionDTO;
 import com.api.appweb.entity.Cliente;
 import com.api.appweb.entity.Habitacion;
+import com.api.appweb.entity.Pago;
 import com.api.appweb.entity.Reservacion;
 import com.api.appweb.exception.ResourceNotFoundException;
 import com.api.appweb.repository.ClienteRepository;
 import com.api.appweb.repository.HabitacionRepository;
+import com.api.appweb.repository.PagoRepository;
 import com.api.appweb.repository.ReservacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +34,9 @@ public class ReservacionService {
 
     @Autowired
     private HabitacionRepository habitacionRepository;
+
+    @Autowired
+    private PagoRepository pagoRepository;
 
     public List<Reservacion> obtenerTodasLasReservaciones() {
         return reservacionRepository.findAll();
@@ -90,6 +97,20 @@ public class ReservacionService {
         reservacion.setTotal(total);
         reservacion.setFechaFinal(fechaFinal);
         reservacion.setDepositoInicial(depositoInicial);
+        reservacion.setPrecioPor(total / reservacionDTO.getTiempoReservacion());
+
+        // Agregar pagos a la reservación
+        List<Pago> pagos = new ArrayList<>();
+        double montoPorPago = reservacion.getPrecioPor();
+        for (int i = 1; i <= reservacionDTO.getTiempoReservacion(); i++) {
+            Pago pago = new Pago();
+            pago.setNumeroPago(i);
+            pago.setMonto(montoPorPago);
+            pago.setPagado(false); // Inicialmente, el pago no está hecho
+            pago.setReservacion(reservacion);
+            pagos.add(pago);
+        }
+        reservacion.setPagos(pagos);
 
         // Marcar habitación como ocupada
         habitacion.setDisponibilidad(OCUPADA);
@@ -159,11 +180,47 @@ public class ReservacionService {
         reservacion.setTotal(total);
         reservacion.setFechaFinal(fechaFinal);
         reservacion.setDepositoInicial(depositoInicial);
+        reservacion.setPrecioPor(total / reservacionDTO.getTiempoReservacion());
+
+        // Obtener y eliminar pagos si la duración se ha reducido
+        List<Pago> pagosExistentes = reservacion.getPagos();
+        List<Pago> pagosAEliminar = new ArrayList<>();
+
+        if (reservacionDTO.getTiempoReservacion() < pagosExistentes.size()) {
+            for (int i = reservacionDTO.getTiempoReservacion(); i < pagosExistentes.size(); i++) {
+                pagosAEliminar.add(pagosExistentes.get(i));
+            }
+            pagosExistentes.removeAll(pagosAEliminar); // Eliminar pagos de la lista en la entidad
+            pagoRepository.deleteAll(pagosAEliminar); // Eliminar pagos de la base de datos
+        }
+
+        // Actualizar pagos existentes
+        for (int i = 0; i < pagosExistentes.size(); i++) {
+            Pago pagoExistente = pagosExistentes.get(i);
+            pagoExistente.setMonto(reservacion.getPrecioPor());
+            pagoRepository.save(pagoExistente);
+        }
+
+        // Crear nuevos pagos si la duración se ha extendido
+        List<Pago> nuevosPagos = new ArrayList<>();
+        for (int i = pagosExistentes.size(); i < reservacionDTO.getTiempoReservacion(); i++) {
+            Pago nuevoPago = new Pago();
+            nuevoPago.setNumeroPago(i + 1);
+            nuevoPago.setMonto(reservacion.getPrecioPor());
+            nuevoPago.setPagado(false); // Inicialmente, el pago no está hecho
+            nuevoPago.setReservacion(reservacion);
+            nuevosPagos.add(nuevoPago);
+        }
+
+        // Agregar nuevos pagos a la lista de pagos y guardarlos
+        if (!nuevosPagos.isEmpty()) {
+            reservacion.getPagos().addAll(nuevosPagos); // Agregar nuevos pagos a la lista de pagos en la reservación
+            pagoRepository.saveAll(nuevosPagos);
+        }
 
         // Guardar la reservación actualizada
         return reservacionRepository.save(reservacion);
     }
-
 
     public Map<String, Boolean> eliminarReservacion(Long idReservacion) throws ResourceNotFoundException {
         Reservacion reservacion = reservacionRepository.findById(idReservacion)
@@ -177,5 +234,42 @@ public class ReservacionService {
         Map<String, Boolean> response = new HashMap<>();
         response.put("eliminado", Boolean.TRUE);
         return response;
+    }
+
+    public Pago agregarPago(Long idReservacion, PagoDTO pagoDTO) throws ResourceNotFoundException {
+        Reservacion reservacion = reservacionRepository.findById(idReservacion)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró una reservación para el ID: " + idReservacion));
+
+        Pago nuevoPago = new Pago();
+        nuevoPago.setNumeroPago(pagoDTO.getNumeroPago());
+        nuevoPago.setMonto(pagoDTO.getMonto());
+        nuevoPago.setPagado(pagoDTO.isPagado());
+        nuevoPago.setReservacion(reservacion);
+
+        return pagoRepository.save(nuevoPago);
+    }
+
+    public Pago actualizarPago(Long idPago, PagoDTO pagoDTO) throws ResourceNotFoundException {
+        Pago pago = pagoRepository.findById(idPago)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un pago para el ID: " + idPago));
+
+        // Actualiza todos los campos necesarios
+        if (pagoDTO.getNumeroPago() != 0) { // Validación si es necesario
+            pago.setNumeroPago(pagoDTO.getNumeroPago());
+        }
+        if (pagoDTO.getMonto() > 0) { // Validación si es necesario
+            pago.setMonto(pagoDTO.getMonto());
+        }
+        pago.setPagado(pagoDTO.isPagado());
+
+        return pagoRepository.save(pago);
+    }
+
+
+    public List<Pago> obtenerPagosPorReservacion(Long idReservacion) throws ResourceNotFoundException {
+        Reservacion reservacion = reservacionRepository.findById(idReservacion)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró una reservación para el ID: " + idReservacion));
+
+        return reservacion.getPagos();
     }
 }
