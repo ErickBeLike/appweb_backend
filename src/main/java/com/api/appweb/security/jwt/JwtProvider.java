@@ -1,6 +1,10 @@
 package com.api.appweb.security.jwt;
 
+import com.api.appweb.security.dto.JwtDTO;
 import com.api.appweb.security.entity.UsuarioPrincipal;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -13,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.List;
@@ -34,7 +39,7 @@ public class JwtProvider {
                 .setSubject(usuarioPrincipal.getUsername())
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + expiration * 1000)) // Nota: Asegúrate de que la expiración esté en milisegundos
+                .setExpiration(new Date(new Date().getTime() + expiration * 360)) // Nota: Asegúrate de que la expiración esté en milisegundos
                 .signWith(getSecret(secret))
                 .compact();
     }
@@ -59,6 +64,26 @@ public class JwtProvider {
             logger.error("fail en la firma");
         }
         return false;
+    }
+
+    public String refreshToken(JwtDTO jwtDto) throws ParseException {
+        try {
+            Jwts.parser().setSigningKey(getSecret(secret)).build().parseClaimsJws(jwtDto.getToken());
+        } catch (ExpiredJwtException e) {
+            JWT jwt = JWTParser.parse(jwtDto.getToken());
+            JWTClaimsSet claims = jwt.getJWTClaimsSet();
+            String nombreUsuario = claims.getSubject();
+            List<String> roles = (List<String>) claims.getClaim("roles");
+
+            return Jwts.builder()
+                    .setSubject(nombreUsuario)
+                    .claim("roles", roles)
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(new Date().getTime() + expiration * 360))
+                    .signWith(getSecret(secret))
+                    .compact();
+        }
+        return null;
     }
 
     private Key getSecret(String secret) {

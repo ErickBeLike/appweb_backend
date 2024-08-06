@@ -49,7 +49,8 @@ public class MainSecurity {
 
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/login",
                         "/auth/nuevo",
-                        "/api/roles").permitAll()
+                        "/api/email/send",
+                        "/auth/refresh").permitAll()
                 .anyRequest().authenticated());
         http.exceptionHandling(exc -> exc.authenticationEntryPoint(jwtEntryPoint));
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -56,5 +57,10 @@ public class AuthController {
     public ResponseEntity<Map<String, Boolean>> eliminarUsuario(@PathVariable Integer id) {
         Map<String, Boolean> response = usuarioService.eliminarUsuario(id);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtDTO> refresh(@RequestBody JwtDTO jwtDTO) throws ParseException {
+        return ResponseEntity.ok(usuarioService.refresh(jwtDTO));
     }
 }

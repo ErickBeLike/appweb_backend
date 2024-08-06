@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -130,5 +131,10 @@ public class UsuarioService {
         Map<String, Boolean> response = new HashMap<>();
         response.put("eliminado", Boolean.TRUE);
         return response;
+    }
+
+    public JwtDTO refresh(JwtDTO jwtDTO) throws ParseException {
+        String token = jwtProvider.refreshToken(jwtDTO);
+        return new JwtDTO(token);
     }
 }
