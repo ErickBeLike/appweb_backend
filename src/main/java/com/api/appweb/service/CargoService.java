@@ -6,6 +6,7 @@ import com.api.appweb.repository.CargoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,11 @@ public class CargoService {
         // Actualiza los datos del cargo
         cargo.setNombreCargo(datosCargo.getNombreCargo());
         cargo.setDescripcionCargo(datosCargo.getDescripcionCargo());
+
+        /**
+         * Modificación de la fecha dde actualización
+         */
+        cargo.setFechaActualizacion(LocalDateTime.now());
 
         // Guarda los cambios en la base de datos
         cargoRepository.save(cargo);

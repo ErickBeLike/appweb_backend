@@ -4,6 +4,7 @@ import com.api.appweb.entity.TipoReservacion;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ReservacionDTO {
     private Long idReservacion;
@@ -12,6 +13,7 @@ public class ReservacionDTO {
     private int tiempoReservacion;
     private TipoReservacion tipoReservacion;
     private Long idHabitacion;
+    private List<PagoDTO> pagos;
 
     public Long getIdReservacion() {
         return idReservacion;
@@ -59,5 +61,13 @@ public class ReservacionDTO {
 
     public void setIdHabitacion(Long idHabitacion) {
         this.idHabitacion = idHabitacion;
+    }
+
+    public List<PagoDTO> getPagos() {
+        return pagos;
+    }
+
+    public void setPagos(List<PagoDTO> pagos) {
+        this.pagos = pagos;
     }
 }

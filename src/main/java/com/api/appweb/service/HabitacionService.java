@@ -6,6 +6,7 @@ import com.api.appweb.repository.HabitacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,11 @@ public class HabitacionService {
         habitacion.setPrecioPorMes(datosHabitacion.getPrecioPorMes());
         habitacion.setDepositoInicialSemana(datosHabitacion.getDepositoInicialSemana());
         habitacion.setDisponibilidad(datosHabitacion.getDisponibilidad());
+
+        /**
+         * Modificación de la fecha dde actualización
+         */
+        habitacion.setFechaActualizacion(LocalDateTime.now());
 
         return habitacionRepository.save(habitacion);
     }

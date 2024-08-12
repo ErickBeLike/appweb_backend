@@ -1,6 +1,8 @@
 package com.api.appweb.controller;
 
+import com.api.appweb.dto.PagoDTO;
 import com.api.appweb.dto.ReservacionDTO;
+import com.api.appweb.entity.Pago;
 import com.api.appweb.entity.Reservacion;
 import com.api.appweb.exception.ResourceNotFoundException;
 import com.api.appweb.service.ReservacionService;
@@ -45,5 +47,26 @@ public class ReservacionController {
     public Map<String, Boolean> eliminarReservacion(@PathVariable Long id) throws ResourceNotFoundException {
         Map<String, Boolean> response = reservacionService.eliminarReservacion(id);
         return response;
+    }
+
+    // Agregar un nuevo pago
+    @PostMapping("/{idReservacion}/pagos")
+    public ResponseEntity<Pago> agregarPago(@PathVariable Long idReservacion, @RequestBody PagoDTO pagoDTO) throws ResourceNotFoundException {
+        Pago nuevoPago = reservacionService.agregarPago(idReservacion, pagoDTO);
+        return ResponseEntity.ok(nuevoPago);
+    }
+
+    // Actualizar un pago existente
+    @PutMapping("/pagos/{idPago}")
+    public ResponseEntity<Pago> actualizarPago(@PathVariable Long idPago, @RequestBody PagoDTO pagoDTO) throws ResourceNotFoundException {
+        Pago pagoActualizado = reservacionService.actualizarPago(idPago, pagoDTO);
+        return ResponseEntity.ok(pagoActualizado);
+    }
+
+    // Obtener todos los pagos para una reservación específica
+    @GetMapping("/{idReservacion}/pagos")
+    public ResponseEntity<List<Pago>> obtenerPagosPorReservacion(@PathVariable Long idReservacion) throws ResourceNotFoundException {
+        List<Pago> pagos = reservacionService.obtenerPagosPorReservacion(idReservacion);
+        return ResponseEntity.ok(pagos);
     }
 }

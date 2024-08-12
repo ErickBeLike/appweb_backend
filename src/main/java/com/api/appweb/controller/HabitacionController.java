@@ -5,6 +5,7 @@ import com.api.appweb.exception.ResourceNotFoundException;
 import com.api.appweb.service.HabitacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class HabitacionController {
         return ResponseEntity.ok().body(habitacion);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Habitacion> agregarHabitacion(@RequestBody Habitacion habitacion) {
         Habitacion nuevaHabitacion = habitacionService.agregarHabitacion(habitacion);
@@ -40,12 +42,14 @@ public class HabitacionController {
         return ResponseEntity.ok(nuevasHabitaciones);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Habitacion> actualizarHabitacion(@PathVariable Long id, @RequestBody Habitacion habitacion) throws ResourceNotFoundException {
         Habitacion habitacionActualizada = habitacionService.actualizarHabitacion(id, habitacion);
         return ResponseEntity.ok(habitacionActualizada);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public Map<String, Boolean> eliminarHabitacion(@PathVariable Long id) throws ResourceNotFoundException {
         Map<String, Boolean> response = habitacionService.eliminarHabitacion(id);

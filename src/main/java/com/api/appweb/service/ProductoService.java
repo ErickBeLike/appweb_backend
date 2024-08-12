@@ -6,6 +6,7 @@ import com.api.appweb.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,22 @@ public class ProductoService {
         Producto producto = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + idProducto));
 
-        producto.setNombreProducto(datosProducto.getNombreProducto());
-        producto.setPrecioProducto(datosProducto.getPrecioProducto());
+        // Actualizar nombre y precio del producto
+        if (datosProducto.getNombreProducto() != null) {
+            producto.setNombreProducto(datosProducto.getNombreProducto());
+        }
+        if (datosProducto.getPrecioProducto() != null) {
+            producto.setPrecioProducto(datosProducto.getPrecioProducto());
+        }
+
+        // Actualizar stock si se proporciona una nueva cantidad de stock
+        if (datosProducto.getStock() != null) {
+            // Asumimos que datosProducto.getStock() contiene el nuevo valor de stock
+            producto.setStock(datosProducto.getStock());
+        }
+
+        // Actualizar la fecha de actualización
+        producto.setFechaActualizacion(LocalDateTime.now());
 
         return productoRepository.save(producto);
     }

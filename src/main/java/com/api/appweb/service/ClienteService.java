@@ -7,6 +7,7 @@ import com.api.appweb.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -47,6 +48,12 @@ public class ClienteService {
         persona.setApellidoMaterno(datosPersona.getApellidoMaterno());
         persona.setTelefono(datosPersona.getTelefono());
         persona.setCorreo(datosPersona.getCorreo());
+
+        // Guarda los cambios en la base de datos
+        /**
+         * Método para modificar la fecha dde la actualización del cliente
+         */
+        cliente.setFechaActualizacion(LocalDateTime.now());
 
         // Guarda los cambios en la base de datos
         clienteRepository.save(cliente);
