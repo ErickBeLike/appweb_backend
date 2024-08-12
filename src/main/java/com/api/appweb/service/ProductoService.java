@@ -38,12 +38,21 @@ public class ProductoService {
         Producto producto = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un producto para el ID: " + idProducto));
 
-        producto.setNombreProducto(datosProducto.getNombreProducto());
-        producto.setPrecioProducto(datosProducto.getPrecioProducto());
+        // Actualizar nombre y precio del producto
+        if (datosProducto.getNombreProducto() != null) {
+            producto.setNombreProducto(datosProducto.getNombreProducto());
+        }
+        if (datosProducto.getPrecioProducto() != null) {
+            producto.setPrecioProducto(datosProducto.getPrecioProducto());
+        }
 
-        /**
-         * Modificación de la fecha dde actualización
-         */
+        // Actualizar stock si se proporciona una nueva cantidad de stock
+        if (datosProducto.getStock() != null) {
+            // Asumimos que datosProducto.getStock() contiene el nuevo valor de stock
+            producto.setStock(datosProducto.getStock());
+        }
+
+        // Actualizar la fecha de actualización
         producto.setFechaActualizacion(LocalDateTime.now());
 
         return productoRepository.save(producto);

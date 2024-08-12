@@ -7,6 +7,7 @@ import com.api.appweb.service.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,17 +19,20 @@ public class EmpleadoController {
     @Autowired
     private EmpleadoService empleadoService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<Empleado> obtenerTodosLosEmpleado() {
         return empleadoService.obtenerTodosLosEmpleados();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Empleado> buscarEmpleadoId(@PathVariable Long id) throws ResourceNotFoundException {
         Empleado empleado = empleadoService.buscarEmpleadoId(id);
         return ResponseEntity.ok().body(empleado);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public Empleado agregarEmpleado(@RequestBody EmpleadoDTO empleadoDTO) throws ResourceNotFoundException {
         return empleadoService.agregarEmpleado(empleadoDTO);
@@ -44,6 +48,7 @@ public class EmpleadoController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable Long id, @RequestBody EmpleadoDTO empleadoDTO)
             throws ResourceNotFoundException {
@@ -51,6 +56,7 @@ public class EmpleadoController {
         return ResponseEntity.ok(updatedEmpleado);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public Map<String, Boolean> eliminarEmpleado(@PathVariable Long id) throws ResourceNotFoundException {
         empleadoService.eliminarEmpleado(id);

@@ -12,6 +12,8 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_producto")
     private Long idProducto;
+    @Column(name = "stock", nullable = false)
+    private Integer stock;
     @Column(name = "nombre")
     private String nombreProducto;
     @Column(name = "precio")
@@ -19,7 +21,6 @@ public class Producto {
 
     @Column(name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion;
-
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
@@ -27,10 +28,19 @@ public class Producto {
     protected void onCreate() {
         fechaCreacion = LocalDateTime.now();
     }
-
     @PreUpdate
     protected void onUpdate() {
         fechaActualizacion = LocalDateTime.now();
+    }
+
+    public void disminuirStock(int cantidad) {
+        this.stock -= cantidad;
+    }
+    public boolean tieneSuficienteStock(int cantidad) {
+        return this.stock >= cantidad;
+    }
+    public boolean sinStock() {
+        return this.stock == 0;
     }
 
     public Long getIdProducto() {
@@ -39,6 +49,14 @@ public class Producto {
 
     public void setIdProducto(Long idProducto) {
         this.idProducto = idProducto;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 
     public String getNombreProducto() {
