@@ -29,10 +29,13 @@ public class Reservacion {
     @ManyToOne
     @JoinColumn(name = "id_habitacion")
     private Habitacion idHabitacion;
-    @Column(name = "deposito_inicial")
-    private double depositoInicial;
-    @Column(name = "total")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_deposito")
+    private Deposito depositoInicial;
+    @Column(name = "sub_total")
     private double total;
+    @Column(name = "total")
+    private double depositoReservacion;
     @Column(name = "precio_por")
     private double precioPor;
     @OneToMany(mappedBy = "reservacion", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -40,7 +43,6 @@ public class Reservacion {
 
     @Column(name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion;
-
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
@@ -110,11 +112,11 @@ public class Reservacion {
         this.idHabitacion = idHabitacion;
     }
 
-    public double getDepositoInicial() {
+    public Deposito getDepositoInicial() {
         return depositoInicial;
     }
 
-    public void setDepositoInicial(double depositoInicial) {
+    public void setDepositoInicial(Deposito depositoInicial) {
         this.depositoInicial = depositoInicial;
     }
 
@@ -124,6 +126,14 @@ public class Reservacion {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public double getDepositoReservacion() {
+        return depositoReservacion;
+    }
+
+    public void setDepositoReservacion(double depositoReservacion) {
+        this.depositoReservacion = depositoReservacion;
     }
 
     public double getPrecioPor() {

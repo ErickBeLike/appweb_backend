@@ -1,7 +1,9 @@
 package com.api.appweb.controller;
 
+import com.api.appweb.dto.DepositoDTO;
 import com.api.appweb.dto.PagoDTO;
 import com.api.appweb.dto.ReservacionDTO;
+import com.api.appweb.entity.Deposito;
 import com.api.appweb.entity.Pago;
 import com.api.appweb.entity.Reservacion;
 import com.api.appweb.exception.ResourceNotFoundException;
@@ -68,5 +70,26 @@ public class ReservacionController {
     public ResponseEntity<List<Pago>> obtenerPagosPorReservacion(@PathVariable Long idReservacion) throws ResourceNotFoundException {
         List<Pago> pagos = reservacionService.obtenerPagosPorReservacion(idReservacion);
         return ResponseEntity.ok(pagos);
+    }
+
+    // Agregar un nuevo depósito (si se necesita)
+    @PostMapping("/{idReservacion}/depositos")
+    public ResponseEntity<Deposito> agregarDeposito(@PathVariable Long idReservacion, @RequestBody DepositoDTO depositoDTO) throws ResourceNotFoundException {
+        Deposito nuevoDeposito = reservacionService.agregarDeposito(idReservacion, depositoDTO);
+        return ResponseEntity.ok(nuevoDeposito);
+    }
+
+    // Actualizar un depósito existente
+    @PutMapping("/{idReservacion}/depositos")
+    public ResponseEntity<Deposito> actualizarDeposito(@PathVariable Long idReservacion, @RequestBody DepositoDTO depositoDTO) throws ResourceNotFoundException {
+        Deposito depositoActualizado = reservacionService.actualizarDeposito(idReservacion, depositoDTO);
+        return ResponseEntity.ok(depositoActualizado);
+    }
+
+    // Obtener el depósito de una reservación específica
+    @GetMapping("/{idReservacion}/depositos")
+    public ResponseEntity<Deposito> obtenerDepositoPorReservacion(@PathVariable Long idReservacion) throws ResourceNotFoundException {
+        Deposito deposito = reservacionService.obtenerDepositoPorReservacion(idReservacion);
+        return ResponseEntity.ok(deposito);
     }
 }

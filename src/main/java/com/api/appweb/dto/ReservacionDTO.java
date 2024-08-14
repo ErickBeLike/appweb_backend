@@ -14,6 +14,7 @@ public class ReservacionDTO {
     private TipoReservacion tipoReservacion;
     private Long idHabitacion;
     private List<PagoDTO> pagos;
+    private DepositoDTO deposito;
 
     public Long getIdReservacion() {
         return idReservacion;
@@ -69,5 +70,13 @@ public class ReservacionDTO {
 
     public void setPagos(List<PagoDTO> pagos) {
         this.pagos = pagos;
+    }
+
+    public DepositoDTO getDeposito() {
+        return deposito;
+    }
+
+    public void setDeposito(DepositoDTO deposito) {
+        this.deposito = deposito;
     }
 }

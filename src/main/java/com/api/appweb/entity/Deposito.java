@@ -4,29 +4,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "pagos")
-public class Pago {
+@Table(name = "depositos")
+public class Deposito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_pago")
-    private Long idPago;
+    @Column(name = "id_deposito")
+    private Long idDeposito;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_reservacion")
     private Reservacion reservacion;
-    @Column(name = "numero_pago")
-    private int numeroPago;
     @Column(name = "monto")
     private double monto;
     @Column(name = "pagado")
     private boolean pagado;
 
-    public Long getIdPago() {
-        return idPago;
+    public Long getIdDeposito() {
+        return idDeposito;
     }
 
-    public void setIdPago(Long idPago) {
-        this.idPago = idPago;
+    public void setIdDeposito(Long idDeposito) {
+        this.idDeposito = idDeposito;
     }
 
     public Reservacion getReservacion() {
@@ -35,14 +33,6 @@ public class Pago {
 
     public void setReservacion(Reservacion reservacion) {
         this.reservacion = reservacion;
-    }
-
-    public int getNumeroPago() {
-        return numeroPago;
-    }
-
-    public void setNumeroPago(int numeroPago) {
-        this.numeroPago = numeroPago;
     }
 
     public double getMonto() {

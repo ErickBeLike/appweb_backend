@@ -2,5 +2,6 @@ package com.api.appweb.entity;
 
 public enum Disponibilidad {
     DISPONIBLE,
-    OCUPADA
+    OCUPADA,
+    SUCIA
 }

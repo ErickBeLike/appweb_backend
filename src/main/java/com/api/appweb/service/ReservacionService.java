@@ -1,16 +1,11 @@
 package com.api.appweb.service;
 
+import com.api.appweb.dto.DepositoDTO;
 import com.api.appweb.dto.PagoDTO;
 import com.api.appweb.dto.ReservacionDTO;
-import com.api.appweb.entity.Cliente;
-import com.api.appweb.entity.Habitacion;
-import com.api.appweb.entity.Pago;
-import com.api.appweb.entity.Reservacion;
+import com.api.appweb.entity.*;
 import com.api.appweb.exception.ResourceNotFoundException;
-import com.api.appweb.repository.ClienteRepository;
-import com.api.appweb.repository.HabitacionRepository;
-import com.api.appweb.repository.PagoRepository;
-import com.api.appweb.repository.ReservacionRepository;
+import com.api.appweb.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,23 +15,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.api.appweb.entity.Disponibilidad.DISPONIBLE;
-import static com.api.appweb.entity.Disponibilidad.OCUPADA;
+import static com.api.appweb.entity.Disponibilidad.*;
 
 @Service
 public class ReservacionService {
 
     @Autowired
     private ReservacionRepository reservacionRepository;
-
     @Autowired
     private ClienteRepository clienteRepository;
-
     @Autowired
     private HabitacionRepository habitacionRepository;
-
     @Autowired
     private PagoRepository pagoRepository;
+    @Autowired
+    private DepositoRepository depositoRepository;
 
     public List<Reservacion> obtenerTodasLasReservaciones() {
         return reservacionRepository.findAll();
@@ -56,8 +49,10 @@ public class ReservacionService {
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró una habitación para el ID: " + reservacionDTO.getIdHabitacion()));
 
         // Verificar disponibilidad de la habitación
-        if (!habitacion.getDisponibilidad().equals(DISPONIBLE)) {
-            throw new IllegalArgumentException("La habitación no está disponible.");
+        if (habitacion.getDisponibilidad().equals(OCUPADA)) {
+            throw new IllegalArgumentException("La habitación se encuentra ocupada.");
+        } else if (habitacion.getDisponibilidad().equals(SUCIA)) {
+            throw new IllegalArgumentException("La habitación no está preparada para su reservación (SUCIA).");
         }
 
         // Crear la reservación y asignar valores
@@ -93,11 +88,29 @@ public class ReservacionService {
                 throw new IllegalArgumentException("Tipo de reservación no válido");
         }
 
-        // Asignar total, fecha final y depósito inicial
+        // Asignar total, fecha final
         reservacion.setTotal(total);
         reservacion.setFechaFinal(fechaFinal);
-        reservacion.setDepositoInicial(depositoInicial);
         reservacion.setPrecioPor(total / reservacionDTO.getTiempoReservacion());
+        reservacion.setDepositoReservacion(total + depositoInicial);
+
+        // Guardar la reservación primero
+        reservacion = reservacionRepository.save(reservacion);
+
+        // Crear y asignar el depósito
+        Deposito deposito = new Deposito();
+        deposito.setMonto(depositoInicial);
+        deposito.setPagado(false); // Inicialmente, el depósito no está pagado
+        deposito.setReservacion(reservacion);
+
+        // Guardar el depósito
+        deposito = depositoRepository.save(deposito);
+
+        // Asignar el depósito persistido a la reservación
+        reservacion.setDepositoInicial(deposito);
+
+        // Actualizar la reservación con el depósito
+        reservacionRepository.save(reservacion);
 
         // Agregar pagos a la reservación
         List<Pago> pagos = new ArrayList<>();
@@ -116,7 +129,7 @@ public class ReservacionService {
         habitacion.setDisponibilidad(OCUPADA);
         habitacionRepository.save(habitacion);
 
-        // Guardar la reservación
+        // Guardar la reservación finalizada con los pagos
         return reservacionRepository.save(reservacion);
     }
 
@@ -133,7 +146,9 @@ public class ReservacionService {
         // Verificar disponibilidad de la nueva habitación
         if (!habitacionActual.getIdHabitacion().equals(nuevaHabitacion.getIdHabitacion())) {
             if (nuevaHabitacion.getDisponibilidad().equals(OCUPADA)) {
-                throw new IllegalArgumentException("La nueva habitación no está disponible.");
+                throw new IllegalArgumentException("La nueva habitación se encuentra ocupada.");
+            } else if (nuevaHabitacion.getDisponibilidad().equals(SUCIA)) {
+                throw new IllegalArgumentException("La nueva habitación no está preparada para su reservación (SUCIA).");
             }
 
             habitacionActual.setDisponibilidad(DISPONIBLE);
@@ -179,8 +194,19 @@ public class ReservacionService {
         // Asignar total, fecha final y depósito inicial
         reservacion.setTotal(total);
         reservacion.setFechaFinal(fechaFinal);
-        reservacion.setDepositoInicial(depositoInicial);
         reservacion.setPrecioPor(total / reservacionDTO.getTiempoReservacion());
+        reservacion.setDepositoReservacion(total + depositoInicial);
+
+        // Actualizar el depósito
+        Deposito deposito = reservacion.getDepositoInicial();
+        if (deposito == null) {
+            deposito = new Deposito();
+            deposito.setReservacion(reservacion);
+        }
+        deposito.setMonto(depositoInicial);
+        deposito.setPagado(deposito.isPagado());
+
+        reservacion.setDepositoInicial(deposito);
 
         // Obtener y eliminar pagos si la duración se ha reducido
         List<Pago> pagosExistentes = reservacion.getPagos();
@@ -214,7 +240,7 @@ public class ReservacionService {
 
         // Agregar nuevos pagos a la lista de pagos y guardarlos
         if (!nuevosPagos.isEmpty()) {
-            reservacion.getPagos().addAll(nuevosPagos); // Agregar nuevos pagos a la lista de pagos en la reservación
+            reservacion.getPagos().addAll(nuevosPagos);
             pagoRepository.saveAll(nuevosPagos);
         }
 
@@ -271,5 +297,46 @@ public class ReservacionService {
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró una reservación para el ID: " + idReservacion));
 
         return reservacion.getPagos();
+    }
+
+    public Deposito agregarDeposito(Long idReservacion, DepositoDTO depositoDTO) throws ResourceNotFoundException {
+        Reservacion reservacion = reservacionRepository.findById(idReservacion)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró una reservación para el ID: " + idReservacion));
+
+        Deposito deposito = new Deposito();
+        deposito.setMonto(depositoDTO.getMonto());
+        deposito.setPagado(depositoDTO.isPagado());
+        deposito.setReservacion(reservacion);
+
+        reservacion.setDepositoInicial(deposito);
+
+        reservacionRepository.save(reservacion); // Guardar la reservación con el nuevo depósito
+
+        return depositoRepository.save(deposito);
+    }
+
+    public Deposito actualizarDeposito(Long idReservacion, DepositoDTO depositoDTO) throws ResourceNotFoundException {
+        Reservacion reservacion = reservacionRepository.findById(idReservacion)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró una reservación para el ID: " + idReservacion));
+
+        Deposito deposito = reservacion.getDepositoInicial();
+        if (deposito == null) {
+            throw new ResourceNotFoundException("No se encontró un depósito para la reservación ID: " + idReservacion);
+        }
+
+        deposito.setPagado(depositoDTO.isPagado());
+        return depositoRepository.save(deposito);
+    }
+
+    public Deposito obtenerDepositoPorReservacion(Long idReservacion) throws ResourceNotFoundException {
+        Reservacion reservacion = reservacionRepository.findById(idReservacion)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró una reservación para el ID: " + idReservacion));
+
+        Deposito deposito = reservacion.getDepositoInicial();
+        if (deposito == null) {
+            throw new ResourceNotFoundException("No se encontró un depósito para la reservación ID: " + idReservacion);
+        }
+
+        return deposito;
     }
 }
