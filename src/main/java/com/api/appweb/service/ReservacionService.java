@@ -62,6 +62,7 @@ public class ReservacionService {
         reservacion.setTiempoReservacion(reservacionDTO.getTiempoReservacion());
         reservacion.setTipoReservacion(reservacionDTO.getTipoReservacion());
         reservacion.setIdHabitacion(habitacion);
+        reservacion.setReservacionFinalizada(reservacionDTO.isReservacionFinalizada());
 
         // Calcular el total y la fecha final
         double total = 0.0;
@@ -165,6 +166,7 @@ public class ReservacionService {
         reservacion.setTiempoReservacion(reservacionDTO.getTiempoReservacion());
         reservacion.setTipoReservacion(reservacionDTO.getTipoReservacion());
         reservacion.setIdHabitacion(nuevaHabitacion);
+        reservacion.setReservacionFinalizada(reservacionDTO.isReservacionFinalizada());
 
         // Calcular el total y la fecha final
         double total = 0.0;
@@ -338,5 +340,29 @@ public class ReservacionService {
         }
 
         return deposito;
+    }
+
+    public Reservacion finalizarReservacion(Long idReservacion, boolean finalizada) throws ResourceNotFoundException {
+        Reservacion reservacion = reservacionRepository.findById(idReservacion)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró una reservación para el ID: " + idReservacion));
+
+        if (finalizada && reservacion.isReservacionFinalizada()) {
+            throw new IllegalArgumentException("La reservación ya está finalizada.");
+        }
+
+        if (!finalizada && !reservacion.isReservacionFinalizada()) {
+            throw new IllegalArgumentException("La reservación ya está desmarcada.");
+        }
+
+        reservacion.setReservacionFinalizada(finalizada);
+
+        // Pasar estado de habitiación a sucia
+        if (finalizada) {
+            Habitacion habitacion = reservacion.getIdHabitacion();
+            habitacion.setDisponibilidad(Disponibilidad.SUCIA);
+            habitacionRepository.save(habitacion);
+        }
+
+        return reservacionRepository.save(reservacion);
     }
 }

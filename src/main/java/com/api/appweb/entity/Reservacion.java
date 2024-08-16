@@ -40,6 +40,8 @@ public class Reservacion {
     private double precioPor;
     @OneToMany(mappedBy = "reservacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pago> pagos;
+    @Column(name = "reservacion_finalizada", nullable = false)
+    private boolean reservacionFinalizada = false;
 
     @Column(name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion;
@@ -166,5 +168,13 @@ public class Reservacion {
 
     public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
+    }
+
+    public boolean isReservacionFinalizada() {
+        return reservacionFinalizada;
+    }
+
+    public void setReservacionFinalizada(boolean reservacionFinalizada) {
+        this.reservacionFinalizada = reservacionFinalizada;
     }
 }

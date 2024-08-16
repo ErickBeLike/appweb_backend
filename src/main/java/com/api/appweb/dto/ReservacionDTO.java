@@ -15,6 +15,7 @@ public class ReservacionDTO {
     private Long idHabitacion;
     private List<PagoDTO> pagos;
     private DepositoDTO deposito;
+    private boolean reservacionFinalizada;
 
     public Long getIdReservacion() {
         return idReservacion;
@@ -78,5 +79,13 @@ public class ReservacionDTO {
 
     public void setDeposito(DepositoDTO deposito) {
         this.deposito = deposito;
+    }
+
+    public boolean isReservacionFinalizada() {
+        return reservacionFinalizada;
+    }
+
+    public void setReservacionFinalizada(boolean reservacionFinalizada) {
+        this.reservacionFinalizada = reservacionFinalizada;
     }
 }

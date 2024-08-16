@@ -9,6 +9,7 @@ import com.api.appweb.entity.Reservacion;
 import com.api.appweb.exception.ResourceNotFoundException;
 import com.api.appweb.service.ReservacionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,5 +92,22 @@ public class ReservacionController {
     public ResponseEntity<Deposito> obtenerDepositoPorReservacion(@PathVariable Long idReservacion) throws ResourceNotFoundException {
         Deposito deposito = reservacionService.obtenerDepositoPorReservacion(idReservacion);
         return ResponseEntity.ok(deposito);
+    }
+
+    @PutMapping("/{idReservacion}/finalizar")
+    public ResponseEntity<Reservacion> finalizarReservacion(
+            @PathVariable Long idReservacion,
+            @RequestBody Map<String, Boolean> body) {
+
+        boolean finalizada = body.getOrDefault("finalizada", false);
+
+        try {
+            Reservacion reservacionFinalizada = reservacionService.finalizarReservacion(idReservacion, finalizada);
+            return ResponseEntity.ok(reservacionFinalizada);
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }
